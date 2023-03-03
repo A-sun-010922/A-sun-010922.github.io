@@ -16,23 +16,23 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="利用dirtycow（CVE-2016-5195）漏洞实现docker escape1.dirtycow简要介绍 Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，源于Linux内核的内存子系统在处理写入时拷贝（copy-on-write, Cow）存在竞争条件（race condition），允许恶意用户提权获取其他只读内存映射的写访问权限。  2.dirtyco">
+    <meta name="description" content="Des算法的原理与实现一、Des简介DES(Data Encryption Standard)是目前最为流行的加密算法之一。DES是对称的，也就是说它使用同一个密钥来加密和解密数据。他是一个分组加密算法，分组大小为64位，如果不是64位的倍数，可以按照某种具体的规则来填充位，例如：PKCS7 Des算法主要分为两大部分：①子密钥生成 ②迭代加密 DES算法通过对明文进行一系列的排列和替换操作来将其">
 <meta property="og:type" content="article">
-<meta property="og:title" content="利用dirtycow（CVE-2016-5195）漏洞实现docker escape">
-<meta property="og:url" content="http://example.com/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/index.html">
+<meta property="og:title" content="Des算法的原理与实现">
+<meta property="og:url" content="http://example.com/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="利用dirtycow（CVE-2016-5195）漏洞实现docker escape1.dirtycow简要介绍 Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，源于Linux内核的内存子系统在处理写入时拷贝（copy-on-write, Cow）存在竞争条件（race condition），允许恶意用户提权获取其他只读内存映射的写访问权限。  2.dirtyco">
+<meta property="og:description" content="Des算法的原理与实现一、Des简介DES(Data Encryption Standard)是目前最为流行的加密算法之一。DES是对称的，也就是说它使用同一个密钥来加密和解密数据。他是一个分组加密算法，分组大小为64位，如果不是64位的倍数，可以按照某种具体的规则来填充位，例如：PKCS7 Des算法主要分为两大部分：①子密钥生成 ②迭代加密 DES算法通过对明文进行一系列的排列和替换操作来将其">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/img/4.png">
-<meta property="article:published_time" content="2023-03-03T10:15:11.692Z">
-<meta property="article:modified_time" content="2023-03-03T12:05:48.288Z">
+<meta property="og:image" content="http://example.com/img/Des.png">
+<meta property="article:published_time" content="2023-03-03T12:19:21.555Z">
+<meta property="article:modified_time" content="2023-03-03T14:07:19.175Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/img/4.png">
+<meta name="twitter:image" content="http://example.com/img/Des.png">
   
   
   
-  <title>利用dirtycow（CVE-2016-5195）漏洞实现docker escape - Hexo</title>
+  <title>Des算法的原理与实现 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -150,7 +150,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="利用dirtycow（CVE-2016-5195）漏洞实现docker escape"></span>
+            <span id="subtitle" data-typed-text="Des算法的原理与实现"></span>
           
         </div>
 
@@ -161,7 +161,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-03 18:15" pubdate>
+        <time datetime="2023-03-03 20:19" pubdate>
           2023年3月3日 晚上
         </time>
       </span>
@@ -173,7 +173,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          1.5k 字
         
       </span>
     
@@ -184,7 +184,7 @@
         
         
         
-          18 分钟
+          13 分钟
         
       </span>
     
@@ -222,43 +222,61 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">利用dirtycow（CVE-2016-5195）漏洞实现docker escape</h1>
+            <h1 style="display: none">Des算法的原理与实现</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="利用dirtycow（CVE-2016-5195）漏洞实现docker-escape"><a href="#利用dirtycow（CVE-2016-5195）漏洞实现docker-escape" class="headerlink" title="利用dirtycow（CVE-2016-5195）漏洞实现docker escape"></a>利用dirtycow（CVE-2016-5195）漏洞实现docker escape</h3><h4 id="1-dirtycow简要介绍"><a href="#1-dirtycow简要介绍" class="headerlink" title="1.dirtycow简要介绍"></a>1.dirtycow简要介绍</h4><blockquote>
-<p>Dirty Cow（CVE-2016-5195）是Linux内核中的权限提升漏洞，源于Linux内核的内存子系统在处理写入时拷贝（copy-on-write, Cow）存在竞争条件（race condition），允许恶意用户提权获取其他只读内存映射的写访问权限。</p>
-</blockquote>
-<h4 id="2-dirtycow具体机制"><a href="#2-dirtycow具体机制" class="headerlink" title="2.dirtycow具体机制"></a>2.dirtycow具体机制</h4><p>Cow机制：</p>
-<blockquote>
-<p>以只读模式打开文件A，返回文件表示符号fd，将文件映射到内存，标记为MAP_PRIVATE，MAP_PRIVATE是一个copy-on-write的映射方式。尽管它也是有backend的，但在写入数据时，他会在物理内存copy一份数据出来(以页为单位)，而且这些数据是不会被回写到文件的。我们想要对一个只有只读权限的文件进行写操作，会经历以下的流程。</p>
-</blockquote>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144117608.png" srcset="/img/loading.gif" lazyload alt="image-20230105144117608"></p>
-<h5 id="2-1-第一次循环"><a href="#2-1-第一次循环" class="headerlink" title="2.1 第一次循环"></a>2.1 第一次循环</h5><p><strong>第一次循环</strong>：首先他会调用**__get_user_pages( )<strong>函数，进入第一次循环：通过给定的虚拟地址</strong>address<strong>，去查询相应的页表和页表项</strong>follow_page( )<strong>，发现页表和页表项目均为空，说明还没有加载过该页</strong>handle_mm_fault( )<strong>，进入进程缺页处理</strong>handle_pte_fault( )<strong>，由于对应物理页没有在内存，并且</strong>pte<strong>为空，说明之前没有加载过该页，又因为这是一个基于文件的映射,所以接下来会调用</strong>do_fault( )<strong>函数，</strong>do_fault( )**函数的具体响应方式如下。</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144452945.png" srcset="/img/loading.gif" lazyload alt="image-20230105144452945"></p>
-<p>显然这里我们是因为第二种情况造成的缺页异常，所以接下来会调用<strong>do_cow_fault( )<strong>将分配的新页与</strong>PTE</strong>建立映射，并且把内容读取到当前新分配的页内，也就是说当前的<strong>pte</strong>执行的是<strong>cowed page</strong>，此时<strong>cow page</strong>属于匿名页，并且<strong>present&#x3D;1，dirty&#x3D;1,read-only&#x3D;1</strong>，还是不可写（应用程序动态分配的堆内存称为匿名页（<strong>Anonymous Page</strong>）。</p>
-<h5 id="2-2-第二次循环"><a href="#2-2-第二次循环" class="headerlink" title="2.2 第二次循环"></a>2.2 第二次循环</h5><p><strong>第二次循环：</strong>第一次循环完毕之后，系统再次调用<strong>follow_page( )<strong>函数，再次请求物理页，这一次页表和页表项都不为空，但是由于我们想进行写访问，但是对于</strong>vma</strong>属性为<strong>read-only</strong>，请求页失败，进入循环进行缺页处理，<strong>handle_pte_fault( )：</strong>通过此函数执行写时复制，分配新的<strong>page</strong>，拷贝旧<strong>page</strong>到新<strong>page</strong>, 并修改相应的页表项为读写。在获取旧的<strong>page</strong>的时候判断是否是匿名页，如果是匿名页，判断是否只有一个进程在引用该页或，如果是，则直接<strong>reuse old page</strong>，并尝试设置<strong>old page</strong> 标记为可写，并返回<strong>VM_FAULT_WRITE</strong>。否则需要新分配一个页作为<strong>cowed page</strong>，并返回<strong>VM_FAULT_WRITE</strong>。在循环中，如果检测到返回值为<strong>VM_FAULT_WRITE</strong>，为去掉请求访问<strong>FOLL_WRITE</strong>标志。</p>
-<h5 id="2-3-第三次循环"><a href="#2-3-第三次循环" class="headerlink" title="2.3 第三次循环"></a>2.3 第三次循环</h5><p><strong>第三次循环：</strong>第二次循环完毕之后，再次调用<strong>follow_page( )<strong>函数，再次请求物理页，第二次请求的时候返回</strong>VM_FAULT_WRITE</strong>，去掉了<strong>FOLL_WRITE</strong>标记，这个时候<strong>PTE</strong>存在，权限也满足，故可以进行写的操作，此时的页是拷贝的副本。</p>
-<h4 id="3-漏洞存在"><a href="#3-漏洞存在" class="headerlink" title="3. 漏洞存在"></a>3. 漏洞存在</h4><p>正常的Cow机制看似没有问题，但是由于竞态条件的存在，上面的操作不是原子的，尝试假设下面的一个情形：如果我们在第二次循环完毕之后，如果立刻使用<strong>madvise</strong>这个系统调用，释放掉刚刚分配好的拷贝页，释放掉内存是会清空页表和页表项的！！！则在第三次循环的时候，本该进行正常访问的时候，由于拷贝页已经被我们释放掉，所以说它会再进行一次页的分配，但是这个时候由于第二次循环，<strong>FOLL_WRITE</strong>标志已经被清除了，所以这个时候会被认为是读访问，所以此时分配的将会是原始页。所以这个漏洞的存在就使得我们可以对只读文件进行一个写的操作。</p>
-<h4 id="4-逃逸思路：vdso-dirty-cow"><a href="#4-逃逸思路：vdso-dirty-cow" class="headerlink" title="4. 逃逸思路：vdso+dirty-cow"></a>4. 逃逸思路：<strong>vdso+dirty-cow</strong></h4><p><strong>dirty cow</strong>漏洞可以让我们获取只读内存的写的权限，我们首先利用<strong>dirty cow</strong>漏洞写入一段<strong>shellcode</strong>到<strong>VDSO</strong>映射的一段闲置内存中，然后改变函数的执行顺序，使得调用正常的任意函数之前都要执行这段<strong>shellcode</strong>。这段<strong>shellcode</strong>初始化的时候会检查是否是被<strong>root</strong>调用，如果是则继续执行，如果不是，则接着执行<strong>clock_gettime</strong>函数，接下来它会检测**&#x2F;tmp&#x2F;.X<strong>文件的存在，如果存在，则这时已经是</strong>root<strong>权限了，然后它会打开一个反向的</strong>TCP<strong>链接，为</strong>Shellcode<strong>中填写的</strong>IP<strong>返回一个</strong>Shell**。</p>
-<h4 id="5-实验结果"><a href="#5-实验结果" class="headerlink" title="5. 实验结果"></a>5. 实验结果</h4><p>内核版本：<strong>3.13.0-85-generic</strong></p>
-<p>Docker版本：<strong>17.03.0-ce</strong></p>
-<p>Docker镜像：<strong>ppabc&#x2F;cve-2016-5195</strong></p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144527454.png" srcset="/img/loading.gif" lazyload alt="image-20230105144527454"></p>
-<p>​                                                                                                          内核版本</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144542830.png" srcset="/img/loading.gif" lazyload alt="image-20230105144542830"></p>
-<p>​                                                                                                          docker版本</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144559014.png" srcset="/img/loading.gif" lazyload alt="image-20230105144559014"></p>
-<p>​																											docker镜像</p>
-<p>进入docker	</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144614964.png" srcset="/img/loading.gif" lazyload alt="image-20230105144614964"></p>
-<p>编译攻击程序0xdeadbeef</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144628454.png" srcset="/img/loading.gif" lazyload alt="image-20230105144628454"></p>
-<p>运行0xdeadbeef</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144638823.png" srcset="/img/loading.gif" lazyload alt="image-20230105144638823"></p>
-<p>此时已经获取了宿主机的root权限的shell，逃逸完毕</p>
-<p><img src="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/image-20230105144654254.png" srcset="/img/loading.gif" lazyload alt="image-20230105144654254"></p>
+                <h1 id="Des算法的原理与实现"><a href="#Des算法的原理与实现" class="headerlink" title="Des算法的原理与实现"></a>Des算法的原理与实现</h1><h2 id="一、Des简介"><a href="#一、Des简介" class="headerlink" title="一、Des简介"></a>一、Des简介</h2><p><strong>DES(Data Encryption Standard)<strong>是目前最为流行的加密算法之一。DES是</strong>对称</strong>的，也就是说它使用同一个密钥来加密和解密数据。他是一个分组加密算法，分组大小为<strong>64</strong>位，如果不是64位的倍数，可以按照某种具体的规则来填充位，例如：<strong>PKCS7</strong></p>
+<p>Des算法主要分为两大部分：①子密钥生成 ②迭代加密</p>
+<p>DES算法通过对明文进行一系列的排列和替换操作来将其加密。</p>
+<p>过程的关键就是从给定的初始密钥中得到16个子密钥的函数。要加密一组明文，每个子密钥按照顺序（1-16）以一系列的位操作施加于数据上，每个子密钥一次，一共重复16次。每一次迭代称之为一轮。要对密文进行解密可以采用同样的步骤，只是子密钥是按照逆向的顺序（16-1）对密文进行处理。</p>
+<h2 id="二、16个子密钥生成"><a href="#二、16个子密钥生成" class="headerlink" title="二、16个子密钥生成"></a>二、16个子密钥生成</h2><p>​	首先是子密钥生成，我们的初始密钥是64位，但是实际上因为奇偶校验位的存在，有效位只有56位。</p>
+<p><strong>step 1：64位初始密钥–&gt;56位密钥</strong></p>
+<p>我们先根据64位初始密钥，进行密钥转换得到56位的密钥，这里涉及到密钥转换表，如下：</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303202940680.png" srcset="/img/loading.gif" lazyload alt="image-20230303202940680"></p>
+<p>解释一下这个表的含义，比如<strong>Key_ip_table[0]为57</strong>，代表原来的<strong>64</strong>位初始密钥的第<strong>57</strong>位作为得到<strong>56</strong>位密钥的第<strong>1</strong>位，<strong>Key_ip_table[1]<strong>为</strong>49</strong>，同理原来的第<strong>49</strong>位初始密钥作为得到的<strong>56</strong>位密钥的第<strong>2</strong>位，最终可以得到<strong>56</strong>位的密钥。</p>
+<p><strong>step2：56位密钥分成左右两组28bit，进行左循环移位</strong></p>
+<p>​	这里涉及到循环移位多少次与是第几个密钥有关，同样涉及到一张表</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303203646030.png" srcset="/img/loading.gif" lazyload alt="image-20230303203646030"></p>
+<p>比如说第1轮，那就只需要左移1位，第二轮也只需要移动1位，而第3轮需要左移2位</p>
+<p><strong>step 3：两组合并得到56位密钥，然后进行置换选择，得到48位的子密钥</strong></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303203909792.png" srcset="/img/loading.gif" lazyload alt="image-20230303203909792"></p>
+<p>这里表中的数字的含义与上面的一致，压缩置换完毕之后得到的就是这一轮的子密钥</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/1281268-20180720073949486-1474910065.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>子密钥的生成流程可以参照上图</p>
+<h2 id="三、迭代加密"><a href="#三、迭代加密" class="headerlink" title="三、迭代加密"></a>三、迭代加密</h2><p>​	Des的另外一个主体部分就是迭代加密，这里我们以一轮加密为例进行说明，过程如下：</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/1281268-20180722085234376-365550304.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><strong>step 1：64位明文数据进行初始置换</strong></p>
+<p>​	同样这里涉及到一个初始置换表，这里含义与上面一致，此处目的仅为打乱原数据。</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303204551919.png" srcset="/img/loading.gif" lazyload alt="image-20230303204551919"></p>
+<p><strong>step 2：分组进行扩展置换</strong></p>
+<p>​	分成的两组，一组为32位明文，右边部分先进行扩展置换，32位明文转换为48位数据，这里涉及扩展置换表，含义与上面一致</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303204950580.png" srcset="/img/loading.gif" lazyload alt="image-20230303204950580"></p>
+<p>得到48位数据后，与该轮次得到的子密钥进行异或运算，结果仍然为48位</p>
+<p><strong>step 3：S盒变换</strong></p>
+<p>​	S盒变换将48位的数据转变为32位数据，有8个盒子，48位数据分成8组，每一组6位，6位输入得到4位输出，最终得到32位的输出数据，这里借助S盒表</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213033624.png" srcset="/img/loading.gif" lazyload alt="image-20230303213033624"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213044004.png" srcset="/img/loading.gif" lazyload alt="image-20230303213044004"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213054104.png" srcset="/img/loading.gif" lazyload alt="image-20230303213054104"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213108035.png" srcset="/img/loading.gif" lazyload alt="image-20230303213108035"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213121957.png" srcset="/img/loading.gif" lazyload alt="image-20230303213121957"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213136961.png" srcset="/img/loading.gif" lazyload alt="image-20230303213136961"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213146273.png" srcset="/img/loading.gif" lazyload alt="image-20230303213146273"></p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213155541.png" srcset="/img/loading.gif" lazyload alt="image-20230303213155541"></p>
+<p>这里我们以S1盒为例进行变化过程的说明，如果这<strong>6</strong>位数据是<strong>010110</strong>，中间四位<strong>1011</strong>作为列数，首尾两位<strong>00</strong>作为行数，所以得到的应该是为<strong>0</strong>，列为<strong>11</strong>，找到S1中相应位置为<strong>12</strong>,<strong>12</strong>的二进制表示为<strong>1100</strong>，所以这四位就作为输出，最终得到32位的数据。</p>
+<p><strong>step 4 ：P盒置换</strong></p>
+<p>​	经过S盒变换得到的32位数据，我们再进行P盒置换得到32位数据，这里借助P盒置换表，含义与之前的置换表一致，这样得到仍然是32位数据，得到数据后与原先的左边分组L0（32bit）进行异或运算，作为下一轮的R1，原先的R0作为下一轮的L1</p>
+<p><img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303213719095.png" srcset="/img/loading.gif" lazyload alt="image-20230303213719095"></p>
+<p>完成之后，<strong>将左右两个分组交换然后开始下一轮</strong>。</p>
+<p><strong>在最后一轮中，不用交换左右分组。</strong></p>
+<p><strong>step 5：末置换</strong></p>
+<p>当全部的16轮操作都结束后，<strong>将最后的右分组R16和最后剩下的左分组L16连接起来，组成一个64位的分组R16L16</strong>。</p>
+<p>最后一步是将<strong>R16L16</strong>进行置换。</p>
+<p>这里同样需要借助到一张置换表，最终得到的就是64位密文数据。<img src="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/image-20230303214328951.png" srcset="/img/loading.gif" lazyload alt="image-20230303214328951"></p>
+<p>图片部分来源于网络</p>
+<p>该内容仅作为学习记录，不做技术指导。</p>
+<p>Des算法的具体实现，可访问：<a target="_blank" rel="noopener" href="https://github.com/Sugar-122/Des">Des算法实现</a>  仅做学习记录。</p>
 
                 
               </div>
@@ -276,8 +294,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>利用dirtycow（CVE-2016-5195）漏洞实现docker escape</div>
-      <div>http://example.com/2023/03/03/利用dirtycow（CVE-2016-5195）漏洞实现docker escape/</div>
+      <div>Des算法的原理与实现</div>
+      <div>http://example.com/2023/03/03/Des算法的原理与实现/</div>
     </div>
     <div class="license-meta">
       
@@ -321,18 +339,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="Des算法的原理与实现">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Des算法的原理与实现</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/03/Kubernetes%E5%AD%A6%E4%B9%A0%E6%90%AC%E8%BF%90/" title="Kubernetes简要学习">
-                        <span class="hidden-mobile">Kubernetes简要学习</span>
+                      <a href="/2023/03/03/%E5%88%A9%E7%94%A8dirtycow%EF%BC%88CVE-2016-5195%EF%BC%89%E6%BC%8F%E6%B4%9E%E5%AE%9E%E7%8E%B0docker%20escape/" title="利用dirtycow（CVE-2016-5195）漏洞实现docker escape">
+                        <span class="hidden-mobile">利用dirtycow（CVE-2016-5195）漏洞实现docker escape</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
