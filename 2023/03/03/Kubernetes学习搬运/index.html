@@ -23,12 +23,12 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Kubernetes介绍1. Kubernetes 可以为你做些什么?通过现代的 Web 服务，用户希望应用程序能够 24&#x2F;7 全天候使用，开发人员希望每天可以多次发布部署新版本的应用程序。 容器化可以帮助软件包达成这些目标，使应用程序能够以简单快速的方式发布和更新，而无需停机。Kubernetes 帮助你确保这些容器化的应用程序在你想要的时间和地点运行，并帮助应用程序找到它们需要的资源">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/image-20230112135905265.png">
+<meta property="og:image" content="http://example.com/2023/03/03/Kubernetes%E5%AD%A6%E4%B9%A0%E6%90%AC%E8%BF%90/image-20230112135905265.png">
 <meta property="article:published_time" content="2023-03-03T10:15:11.690Z">
-<meta property="article:modified_time" content="2023-03-02T07:26:24.437Z">
+<meta property="article:modified_time" content="2023-03-03T10:55:44.679Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/image-20230112135905265.png">
+<meta name="twitter:image" content="http://example.com/2023/03/03/Kubernetes%E5%AD%A6%E4%B9%A0%E6%90%AC%E8%BF%90/image-20230112135905265.png">
   
   
   
@@ -291,7 +291,7 @@
 <p><strong>Master</strong>：调度整个集群</p>
 <p><strong>Nodes</strong>：负责运行应用</p>
 <p>集群图</p>
-<p><img src="/image-20230112135905265.png" srcset="/img/loading.gif" lazyload alt="image-20230112135905265"></p>
+<p><img src="/2023/03/03/Kubernetes%E5%AD%A6%E4%B9%A0%E6%90%AC%E8%BF%90/image-20230112135905265.png" srcset="/img/loading.gif" lazyload alt="image-20230112135905265"></p>
 <p><strong>Master 负责管理整个集群。</strong> Master 协调集群中的所有活动，例如调度应用、维护应用的所需状态、应用扩容以及推出新的更新。</p>
 <p><strong>Node 是一个虚拟机或者物理机，它在 Kubernetes 集群中充当工作机器的角色</strong> 每个Node都有 Kubelet , 它管理 Node 而且是 Node 与 Master 通信的代理。 Node 还应该具有用于处理容器操作的工具，例如 Docker 或 rkt 。处理生产级流量的 Kubernetes 集群至少应具有三个 Node，因为如果一个 Node 出现故障其对应的 etcd 成员和控制平面实例都会丢失，并且冗余会受到影响。 你可以通过添加更多控制平面节点来降低这种风险 。</p>
 <p>在 Kubernetes 上部署应用时，你告诉 Master 启动应用容器。 Master 就编排容器在集群的 Node 上运行。 <strong>Node 使用 Master 暴露的 Kubernetes API 与 Master 通信。</strong>终端用户也可以使用 Kubernetes API 与集群交互。</p>
