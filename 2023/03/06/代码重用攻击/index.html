@@ -16,23 +16,23 @@
   <meta name="author" content="Sugar">
   <meta name="keywords" content="">
   
-    <meta name="description" content="跨站请求伪造（CSRF）一、概念​		当一个网页给它所在的网站发送HTTP请求的时候，该请求被称为同站请求；如果该请求被发送到一个不同的网站，则该请求为跨站请求。来自网站自己页面的请求显然是可信的，而来自其他网站页面的请求则不一定可信。网站通常依靠回话cookie来判断一个来自客户端的请求是否可信，但是浏览器为同站请求和跨站请求添加了一模一样的cookie，如此一来便无法区分一个请求是来自自己的页">
+    <meta name="description" content="代码重用攻击一、学习目标 理解代码重用攻击的原理 掌握代码重用攻击的攻击方式 设计代码重用攻击的防御方案  二、进程内存布局 栈：局部变量，函数参数，返回地址 堆：程序动态分配的内存 BSS段：未初始化的全局和静态变量 数据段：已初始化的全局变量和静态变量 代码段：程序代码  三、概念及原理代码重用攻击：栈缓存溢出后，将返回地址指向进程中已有代码，函数返回后，跳至攻击者指定已有代码继续执行，因重用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="跨站请求伪造(CSRF)">
-<meta property="og:url" content="http://sugar-122.github.io/2023/03/05/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%EF%BC%88CSRF%EF%BC%89/index.html">
+<meta property="og:title" content="代码重用攻击">
+<meta property="og:url" content="http://sugar-122.github.io/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="跨站请求伪造（CSRF）一、概念​		当一个网页给它所在的网站发送HTTP请求的时候，该请求被称为同站请求；如果该请求被发送到一个不同的网站，则该请求为跨站请求。来自网站自己页面的请求显然是可信的，而来自其他网站页面的请求则不一定可信。网站通常依靠回话cookie来判断一个来自客户端的请求是否可信，但是浏览器为同站请求和跨站请求添加了一模一样的cookie，如此一来便无法区分一个请求是来自自己的页">
+<meta property="og:description" content="代码重用攻击一、学习目标 理解代码重用攻击的原理 掌握代码重用攻击的攻击方式 设计代码重用攻击的防御方案  二、进程内存布局 栈：局部变量，函数参数，返回地址 堆：程序动态分配的内存 BSS段：未初始化的全局和静态变量 数据段：已初始化的全局变量和静态变量 代码段：程序代码  三、概念及原理代码重用攻击：栈缓存溢出后，将返回地址指向进程中已有代码，函数返回后，跳至攻击者指定已有代码继续执行，因重用">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://sugar-122.github.io/img/CSRF.png">
-<meta property="article:published_time" content="2023-03-05T06:17:13.117Z">
-<meta property="article:modified_time" content="2023-03-05T11:39:59.443Z">
+<meta property="og:image" content="http://sugar-122.github.io/img/image-20230306100558380.png">
+<meta property="article:published_time" content="2023-03-06T00:15:15.941Z">
+<meta property="article:modified_time" content="2023-03-06T02:40:16.491Z">
 <meta property="article:author" content="Sugar">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://sugar-122.github.io/img/CSRF.png">
+<meta name="twitter:image" content="http://sugar-122.github.io/img/image-20230306100558380.png">
   
   
   
-  <title>跨站请求伪造(CSRF) - Hexo</title>
+  <title>代码重用攻击 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -150,7 +150,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="跨站请求伪造(CSRF)"></span>
+            <span id="subtitle" data-typed-text="代码重用攻击"></span>
           
         </div>
 
@@ -161,8 +161,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-05 14:17" pubdate>
-          2023年3月5日 下午
+        <time datetime="2023-03-06 08:15" pubdate>
+          2023年3月6日 早上
         </time>
       </span>
     
@@ -173,7 +173,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2k 字
+          1.6k 字
         
       </span>
     
@@ -184,7 +184,7 @@
         
         
         
-          17 分钟
+          14 分钟
         
       </span>
     
@@ -222,39 +222,55 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">跨站请求伪造(CSRF)</h1>
+            <h1 style="display: none">代码重用攻击</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="跨站请求伪造（CSRF）"><a href="#跨站请求伪造（CSRF）" class="headerlink" title="跨站请求伪造（CSRF）"></a>跨站请求伪造（CSRF）</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>​		当一个网页给它所在的网站发送<strong>HTTP</strong>请求的时候，该请求被称为同站请求；如果该请求被发送到一个不同的网站，则该请求为跨站请求。来自网站自己页面的请求显然是可信的，而来自其他网站页面的请求则不一定可信。网站通常依靠回话<strong>cookie</strong>来判断一个来自客户端的请求是否可信，但是浏览器为同站请求和跨站请求添加了一模一样的<strong>cookie</strong>，如此一来便无法区分一个请求是来自自己的页面还是第三方页面。可以这么理解<strong>CSRF</strong>：攻击者首先盗用了你的身份，然后以你的名义进行某些非法操作。CSRF能够使用你的账户发送邮件，获取你的敏感信息，甚至盗走你的账户购买商品等。<strong>CSRF</strong>攻击其实是利用了<strong>web</strong>中用户身份认证验证的一个漏洞：简单的身份验证仅仅能保证请求发自某个用户的浏览器，却不能保证请求本身是用户自愿发出的。</p>
-<p><img src="/2023/03/05/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%EF%BC%88CSRF%EF%BC%89/image-20230305142140496.png" srcset="/img/loading.gif" lazyload alt="image-20230305142140496"></p>
-<h2 id="二、跨站请求伪造攻击"><a href="#二、跨站请求伪造攻击" class="headerlink" title="二、跨站请求伪造攻击"></a>二、跨站请求伪造攻击</h2><p><code>CSRF</code>攻击包括三部分：<code>目标用户</code>，<code>目标网站</code>，<code>由攻击者操纵的恶意网站</code></p>
-<p>当用户访问恶意网站的时候，来自恶意网站的网页会发送伪造的HTTP请求给目标网站。</p>
-<p>为了成功发动CSRF攻击，攻击者需要制作一个可以伪造跨站请求的网页，还需要引诱用户去访问该恶意网页。除此之外，用户还需要已经在目标网站登录，否则即使攻击者仍可以发送伪造请求，服务器也不会处理这些请求，而是会把用户引导到登录界面，并要求登录凭证，用户会立即察觉到问题，攻击就失效了。</p>
-<p><img src="/2023/03/05/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%EF%BC%88CSRF%EF%BC%89/image-20230305143043503.png" srcset="/img/loading.gif" lazyload alt="image-20230305143043503"></p>
-<h2 id="三、攻击原理以及过程"><a href="#三、攻击原理以及过程" class="headerlink" title="三、攻击原理以及过程"></a>三、攻击原理以及过程</h2><blockquote>
-<p>（1）用户打开浏览器，访问受信任网站A，输入用户名和密码请求登录网站A</p>
-<p>（2）用户通过信息验证后，网站A产生Cookie信息并返回浏览器，此时用户登录网站A成功，可以正常发送请求到网站A</p>
-<p>（3）用户未退出网站A之前，在同一浏览器中，打开一个tab页访问恶意网站</p>
-<p>（4）恶意网站接收到用户请求后，返回一些攻击性代码，并发出一个请求访问第三方站点A</p>
-<p>（5）浏览器在接收到这些攻击性代码后，根据网站B的请求，在用户不知情的情况下携带Cookie信息，向网站A发出请求。网站A并且不知道该请求是由B发起的，所以会根据用户的Cookie信息以该用户的权限处理该请求。</p>
+                <h1 id="代码重用攻击"><a href="#代码重用攻击" class="headerlink" title="代码重用攻击"></a>代码重用攻击</h1><h2 id="一、学习目标"><a href="#一、学习目标" class="headerlink" title="一、学习目标"></a>一、学习目标</h2><blockquote>
+<p>理解代码重用攻击的原理</p>
+<p>掌握代码重用攻击的攻击方式</p>
+<p>设计代码重用攻击的防御方案</p>
 </blockquote>
-<p>可见，达到CSRF攻击，必须达到两个条件：<code>登录受信任站点A，并在本地生成Cookie</code>,<code>在不登出A的情况，访问恶意站点B</code></p>
-<h2 id="四、常见的CSRF攻击类型"><a href="#四、常见的CSRF攻击类型" class="headerlink" title="四、常见的CSRF攻击类型"></a>四、常见的CSRF攻击类型</h2><p>(1)<code>GET</code>类型的<code>CSRF</code></p>
-<p>(2)<code>POST</code>类型的<code>CSRF</code></p>
-<p>他们两者的一个区别是如何在请求中附加数据，GET请求把数据附加在请求的URL中，而POST请求把数据附加在请求的数据字段中。</p>
-<h2 id="五、防御措施"><a href="#五、防御措施" class="headerlink" title="五、防御措施"></a>五、防御措施</h2><p>（1）使用<code>referer</code>头</p>
-<p>​		在<code>HTTP</code>请求头中的确有一个字段可以用来判断一个请求是否是跨站请求，就是<code>referer</code>头。他用来记录请求是从哪个网页发出的，它存储的是该网页的<code>URL</code>，使用<code>referer</code>字段服务器很容易判断一个请求是否来自它自己的网页。但是他会泄露使用者的浏览历史，产生隐私泄露问题，一些浏览器和代理会将此字段删除，以保护用户隐私，所以使用这个头字段作为防护策略可能会误把很多合法请求当做跨站请求。</p>
-<p>（2）同站<code>cookie</code></p>
-<p>​		给<code>cookie</code>添加了一个特殊的属性，称为<code>SameSite</code>属性，该属性由服务器进行设置，它告诉浏览器一个<code>cookie</code>是否可以被跨站请求使用，没有此属性的<code>cookie</code>会被附加到所有的请求上，不管是同站请求还是跨站请求。拥有此属性的<code>cookie</code>会附加到同站请求上，是否会附加到跨站请求上取决于该属性的具体值，<code>SameSite</code>有两个属性值：<code>Strict</code>和<code>Lax</code>，如果值是<code>Strict</code>，那么<code>cookie</code>将不会与跨站请求一起发送；如果值是<code>Lax</code>，那么<code>cookie</code>只有在顶级导航的跨站请求时才一起发送</p>
-<p>（3）秘密令牌</p>
-<p>​		网络应用判断一个请求是否是跨站，一个常用的方法就是秘密令牌，秘密令牌只有被自己的页面取得，其他网站的网页得不到，所有的同站请求都应当包含这个秘密令牌，这样就可以和跨站请求区分开，因为产生跨站请求的网页得不到秘密令牌。</p>
-<p>​		秘密令牌的两种典型实现方法</p>
-<pre><code class="hljs">    1. 在每个网页内嵌入一个随机的机密值，当请求从该页面发起时，该机密值被放在请求中。由于同源策略，不同源的网页不能访问此页面的内容，因此这些恶意网页就不能在跨站请求中包含正确的机密值。
-    1. 把机密值放在`cookie`中，当一个请求发起后，请求从`cookie`中读出该机密值并将它包含在请求的数据字段中。该字段独立于已经被浏览器包含在`HTTP`头中的`cookie`，由于同源策略，不同源的页面不能读取其他源的`cookie`内容，因此攻击者无法在请求的数据字段包含该机密值。
-</code></pre>
-<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>​		在一个跨站请求伪造攻击中，目标用户被诱骗去访问攻击者的网页，同时还需要维护与目标网站的活跃会话，当用户访问攻击者的网页的时候，攻击者可以伪造一个请求，从恶意网页发送到目标网站。如果目标网站不能识别一个请求究竟是来自他的网页还是一个不可信任的第三方网页，那么就会产生问题，因为执行攻击者伪造的请求会产生安全威胁。</p>
+<h2 id="二、进程内存布局"><a href="#二、进程内存布局" class="headerlink" title="二、进程内存布局"></a>二、进程内存布局</h2><blockquote>
+<p>栈：局部变量，函数参数，返回地址</p>
+<p>堆：程序动态分配的内存</p>
+<p>BSS段：未初始化的全局和静态变量</p>
+<p>数据段：已初始化的全局变量和静态变量</p>
+<p>代码段：程序代码</p>
+</blockquote>
+<h2 id="三、概念及原理"><a href="#三、概念及原理" class="headerlink" title="三、概念及原理"></a>三、概念及原理</h2><p><code>代码重用攻击</code>：栈缓存溢出后，将返回地址指向进程中已有代码，函数返回后，跳至攻击者指定已有代码继续执行，因重用了已存在代码，所以称为代码重用攻击</p>
+<p><strong>return-to-libc</strong>：<strong>libc</strong>是几乎每个应用程序都包含的标准C语言库，包含了大量的基础函数实现，<strong>execve</strong>&#x2F;<strong>system</strong>函数可以帮助打开<strong>shell</strong>,进行后续攻击</p>
+<p>例如：通过攻击打开<strong>shell</strong></p>
+<p>（1）得到字符串：<strong>/bin/sh</strong></p>
+<p>思路一：从程序将要加载的动态库中寻找，为后续攻击做准备，我们只需要知道“&#x2F;bin&#x2F;sh”字符串的地址即可</p>
+<p>思路二：通过shell的特性，自己构造<strong>/bin/sh</strong>字符串，但是实际上你进行攻击的时候，很多情况下是没有办法用shell来构造一个环境变量的</p>
+<p>（2）为<strong>execve</strong>准备参数</p>
+<p>​	32位x86架构linux系统中，参数传递通过<strong>栈</strong>来完成（下图中的<strong>rbp</strong>应该是<strong>ebp</strong>)，这里的话只需要自己构造栈就行，无需执行指令。</p>
+<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306084652318.png" srcset="/img/loading.gif" lazyload alt="image-20230306084652318"></p>
+<p>​	64位x86架构linux系统中，参数传递通过<strong>栈+寄存器</strong>来完成，这里寄存器的值修改需要用到指令，可以用后面提到的<strong>ROP</strong>攻击</p>
+<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306084740219.png" srcset="/img/loading.gif" lazyload alt="image-20230306084740219"></p>
+<p>（3）跳转到<strong>execve</strong>：打开<strong>libc</strong>中<strong>execve</strong>函数的地址</p>
+<p>​	step 1：<strong>gdb</strong>中可以直接通过调试指令拿到</p>
+<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306100230622.png" srcset="/img/loading.gif" lazyload alt="image-20230306100230622"></p>
+<p>​	step 2：利用栈缓存溢出将函数返回地址指向<strong>execve</strong>函数的地址</p>
+<h2 id="四、ROP攻击"><a href="#四、ROP攻击" class="headerlink" title="四、ROP攻击"></a>四、<strong>ROP</strong>攻击</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">pop	%eax<br>pop %ecx<br>mov	%eax,(%ecx)<br>//修改任意内存<br></code></pre></td></tr></table></figure>
+
+<p>​	因为在攻击过程中你的栈可以由你自己进行构造，所以上述三条指令可以达到修改任意地址下的数据</p>
+<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306100558380.png" srcset="/img/loading.gif" lazyload alt="image-20230306100558380"></p>
+<p>可以利用的部分代码叫做<strong>Gadget</strong>，我们通过寻找合适的<strong>Gadget</strong>来构造一个<strong>Gadget Chain</strong>，然后并且构造合适的栈的内容来实现攻击。（上图中的<strong>rsp</strong>应该为<strong>esp</strong>）</p>
+<p>所以分析程序中已有的可利用代码片段，利用<strong>ret</strong>指令将这些可利用代码片段串到一起，这种攻击方式称为<strong>ROP</strong>攻击</p>
+<p><strong>Gadget自动提取工具：</strong><a target="_blank" rel="noopener" href="https://github.com/JonathanSalwan/ROPgadget">JonathanSalwan&#x2F;ROPgadget: This tool lets you search your gadgets on your binaries to facilitate your ROP exploitation. ROPgadget supports ELF, PE and Mach-O format on x86, x64, ARM, ARM64, PowerPC, SPARC and MIPS architectures. (github.com)</a></p>
+<h2 id="五、如何防御ROP攻击"><a href="#五、如何防御ROP攻击" class="headerlink" title="五、如何防御ROP攻击"></a>五、如何防御ROP攻击</h2><p>（1）从二进制文件中构造<strong>Gadget Chain</strong>进行防御</p>
+<p>​		1. 指令间填充</p>
+<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306101816158.png" srcset="/img/loading.gif" lazyload alt="image-20230306101816158"></p>
+<p>​		如上图所示，单独看上面部分，只有<strong>movl</strong>指令和<strong>robl</strong>指令，没有<strong>ret</strong>指令，按理来说不具备成为<strong>Gadget</strong>的可能性，但是由于二进制指令是变长的，所以说从哪里开始我们无法确定，如果从<strong>04</strong>开始的话，<strong>04 d0 c3</strong>就构成了一个<strong>addb</strong>指令+<strong>ret</strong>指令，就成了一个<strong>Gadge</strong>t指令，所以说如果我们在指令之间填充<strong>nop</strong>指令的话，上面的代码片段就无法成为一个<strong>Gadget</strong>了，从而减少<strong>Gadget</strong>的数量。</p>
+<p>​		2. 减少可用代码规模</p>
+<p>​       <strong>libc</strong>中大部分代码很少被使用，程序加载的时候将这部分很少使用的代码直接映射位不可执行，就可以降低构建<strong>Gadget Chain</strong>的概率</p>
+<p>（2）针对栈缓存溢出的防御机制</p>
+<p>​		返回地址是因为栈缓存溢出而被修改的，所以说如果我们能够阻止栈缓存溢出，就可以阻止代码重用攻击。</p>
+<p>（3）从执行Gadget Chain完成攻击进行防御</p>
+<p>​		控制流完整性（<strong>Control Flow Integrity</strong>）检测</p>
 
                 
               </div>
@@ -272,8 +288,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>跨站请求伪造(CSRF)</div>
-      <div>http://sugar-122.github.io/2023/03/05/跨站请求伪造（CSRF）/</div>
+      <div>代码重用攻击</div>
+      <div>http://sugar-122.github.io/2023/03/06/代码重用攻击/</div>
     </div>
     <div class="license-meta">
       
@@ -285,7 +301,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年3月5日</div>
+          <div>2023年3月6日</div>
         </div>
       
       
@@ -317,18 +333,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/" title="代码重用攻击">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">代码重用攻击</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/" title="代码漏洞分析与缓冲区溢出攻击">
-                        <span class="hidden-mobile">代码漏洞分析与缓冲区溢出攻击</span>
+                      <a href="/2023/03/05/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%EF%BC%88CSRF%EF%BC%89/" title="跨站请求伪造(CSRF)">
+                        <span class="hidden-mobile">跨站请求伪造(CSRF)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
