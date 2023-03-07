@@ -16,23 +16,23 @@
   <meta name="author" content="Sugar">
   <meta name="keywords" content="">
   
-    <meta name="description" content="代码重用攻击一、学习目标 理解代码重用攻击的原理 掌握代码重用攻击的攻击方式 设计代码重用攻击的防御方案  二、进程内存布局 栈：局部变量，函数参数，返回地址 堆：程序动态分配的内存 BSS段：未初始化的全局和静态变量 数据段：已初始化的全局变量和静态变量 代码段：程序代码  三、概念及原理代码重用攻击：栈缓存溢出后，将返回地址指向进程中已有代码，函数返回后，跳至攻击者指定已有代码继续执行，因重用">
+    <meta name="description" content="KMP算法一、KMP算法与朴素模式匹配算法的比较KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。 例如：主串S&#x3D;“abcdehh“，子串T&#x3D;”cde“ 当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”askjdahksjdhalksdlakjdlkajsdlkaldacmee“，就已经让人头痛了吧，用算法来做，很容易">
 <meta property="og:type" content="article">
-<meta property="og:title" content="代码重用攻击">
-<meta property="og:url" content="http://sugar-122.github.io/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/index.html">
+<meta property="og:title" content="KMP算法">
+<meta property="og:url" content="http://sugar-122.github.io/2023/03/06/KMP%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="代码重用攻击一、学习目标 理解代码重用攻击的原理 掌握代码重用攻击的攻击方式 设计代码重用攻击的防御方案  二、进程内存布局 栈：局部变量，函数参数，返回地址 堆：程序动态分配的内存 BSS段：未初始化的全局和静态变量 数据段：已初始化的全局变量和静态变量 代码段：程序代码  三、概念及原理代码重用攻击：栈缓存溢出后，将返回地址指向进程中已有代码，函数返回后，跳至攻击者指定已有代码继续执行，因重用">
+<meta property="og:description" content="KMP算法一、KMP算法与朴素模式匹配算法的比较KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。 例如：主串S&#x3D;“abcdehh“，子串T&#x3D;”cde“ 当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”askjdahksjdhalksdlakjdlkajsdlkaldacmee“，就已经让人头痛了吧，用算法来做，很容易">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://sugar-122.github.io/img/image-20230306100558380.png">
-<meta property="article:published_time" content="2023-03-06T00:15:15.941Z">
-<meta property="article:modified_time" content="2023-03-06T02:40:16.491Z">
+<meta property="og:image" content="http://sugar-122.github.io/img/KMP.png">
+<meta property="article:published_time" content="2023-03-06T12:55:51.747Z">
+<meta property="article:modified_time" content="2023-03-07T12:58:15.678Z">
 <meta property="article:author" content="Sugar">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://sugar-122.github.io/img/image-20230306100558380.png">
+<meta name="twitter:image" content="http://sugar-122.github.io/img/KMP.png">
   
   
   
-  <title>代码重用攻击 - Hexo</title>
+  <title>KMP算法 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -150,7 +150,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="代码重用攻击"></span>
+            <span id="subtitle" data-typed-text="KMP算法"></span>
           
         </div>
 
@@ -161,8 +161,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-03-06 08:15" pubdate>
-          2023年3月6日 早上
+        <time datetime="2023-03-06 20:55" pubdate>
+          2023年3月6日 晚上
         </time>
       </span>
     
@@ -173,7 +173,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          1.9k 字
         
       </span>
     
@@ -184,7 +184,7 @@
         
         
         
-          14 分钟
+          17 分钟
         
       </span>
     
@@ -222,55 +222,67 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">代码重用攻击</h1>
+            <h1 style="display: none">KMP算法</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="代码重用攻击"><a href="#代码重用攻击" class="headerlink" title="代码重用攻击"></a>代码重用攻击</h1><h2 id="一、学习目标"><a href="#一、学习目标" class="headerlink" title="一、学习目标"></a>一、学习目标</h2><blockquote>
-<p>理解代码重用攻击的原理</p>
-<p>掌握代码重用攻击的攻击方式</p>
-<p>设计代码重用攻击的防御方案</p>
-</blockquote>
-<h2 id="二、进程内存布局"><a href="#二、进程内存布局" class="headerlink" title="二、进程内存布局"></a>二、进程内存布局</h2><blockquote>
-<p>栈：局部变量，函数参数，返回地址</p>
-<p>堆：程序动态分配的内存</p>
-<p>BSS段：未初始化的全局和静态变量</p>
-<p>数据段：已初始化的全局变量和静态变量</p>
-<p>代码段：程序代码</p>
-</blockquote>
-<h2 id="三、概念及原理"><a href="#三、概念及原理" class="headerlink" title="三、概念及原理"></a>三、概念及原理</h2><p><code>代码重用攻击</code>：栈缓存溢出后，将返回地址指向进程中已有代码，函数返回后，跳至攻击者指定已有代码继续执行，因重用了已存在代码，所以称为代码重用攻击</p>
-<p><strong>return-to-libc</strong>：<strong>libc</strong>是几乎每个应用程序都包含的标准C语言库，包含了大量的基础函数实现，<strong>execve</strong>&#x2F;<strong>system</strong>函数可以帮助打开<strong>shell</strong>,进行后续攻击</p>
-<p>例如：通过攻击打开<strong>shell</strong></p>
-<p>（1）得到字符串：<strong>/bin/sh</strong></p>
-<p>思路一：从程序将要加载的动态库中寻找，为后续攻击做准备，我们只需要知道“&#x2F;bin&#x2F;sh”字符串的地址即可</p>
-<p>思路二：通过shell的特性，自己构造<strong>/bin/sh</strong>字符串，但是实际上你进行攻击的时候，很多情况下是没有办法用shell来构造一个环境变量的</p>
-<p>（2）为<strong>execve</strong>准备参数</p>
-<p>​	32位x86架构linux系统中，参数传递通过<strong>栈</strong>来完成（下图中的<strong>rbp</strong>应该是<strong>ebp</strong>)，这里的话只需要自己构造栈就行，无需执行指令。</p>
-<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306084652318.png" srcset="/img/loading.gif" lazyload alt="image-20230306084652318"></p>
-<p>​	64位x86架构linux系统中，参数传递通过<strong>栈+寄存器</strong>来完成，这里寄存器的值修改需要用到指令，可以用后面提到的<strong>ROP</strong>攻击</p>
-<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306084740219.png" srcset="/img/loading.gif" lazyload alt="image-20230306084740219"></p>
-<p>（3）跳转到<strong>execve</strong>：打开<strong>libc</strong>中<strong>execve</strong>函数的地址</p>
-<p>​	step 1：<strong>gdb</strong>中可以直接通过调试指令拿到</p>
-<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306100230622.png" srcset="/img/loading.gif" lazyload alt="image-20230306100230622"></p>
-<p>​	step 2：利用栈缓存溢出将函数返回地址指向<strong>execve</strong>函数的地址</p>
-<h2 id="四、ROP攻击"><a href="#四、ROP攻击" class="headerlink" title="四、ROP攻击"></a>四、<strong>ROP</strong>攻击</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">pop	%eax<br>pop %ecx<br>mov	%eax,(%ecx)<br>//修改任意内存<br></code></pre></td></tr></table></figure>
+                <h1 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h1><h2 id="一、KMP算法与朴素模式匹配算法的比较"><a href="#一、KMP算法与朴素模式匹配算法的比较" class="headerlink" title="一、KMP算法与朴素模式匹配算法的比较"></a>一、KMP算法与朴素模式匹配算法的比较</h2><p>KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。</p>
+<p>例如：主串S&#x3D;“<code>abcdehh</code>“，子串T&#x3D;”<code>cde</code>“</p>
+<p>当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”<code>askjdahksjdhalksdlakjdlkajsdlkaldacmee</code>“，就已经让人头痛了吧，用算法来做，很容易可以想到用暴力搜索匹配就行，就是从主串的第一个字符开始查询，进行匹配，如果不符合就到主串的第二个字符进行查询，直到找到子串。这种方法也就是<code>朴素模式匹配算法</code>。</p>
+<p>朴素模式匹配算法在最好情况下时间复杂度为O(n)，即子串的n个字符正好等于主串的前n个字符，而最坏的情况下**时间复杂度为O(m*n)**。即找到最后一个子串才匹配成功。</p>
+<p>而为了提高效率，我们推出了<strong>KMP</strong>算法，有一说一，这个算法非常烧脑</p>
+<p>对于给定的一个主串：<strong>abcabdacbademc</strong>，一个给定的子串：<strong>abcabcm</strong></p>
+<p>我们第一次比较必然是这样的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>a b c a b c m  <br></code></pre></td></tr></table></figure>
 
-<p>​	因为在攻击过程中你的栈可以由你自己进行构造，所以上述三条指令可以达到修改任意地址下的数据</p>
-<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306100558380.png" srcset="/img/loading.gif" lazyload alt="image-20230306100558380"></p>
-<p>可以利用的部分代码叫做<strong>Gadget</strong>，我们通过寻找合适的<strong>Gadget</strong>来构造一个<strong>Gadget Chain</strong>，然后并且构造合适的栈的内容来实现攻击。（上图中的<strong>rsp</strong>应该为<strong>esp</strong>）</p>
-<p>所以分析程序中已有的可利用代码片段，利用<strong>ret</strong>指令将这些可利用代码片段串到一起，这种攻击方式称为<strong>ROP</strong>攻击</p>
-<p><strong>Gadget自动提取工具：</strong><a target="_blank" rel="noopener" href="https://github.com/JonathanSalwan/ROPgadget">JonathanSalwan&#x2F;ROPgadget: This tool lets you search your gadgets on your binaries to facilitate your ROP exploitation. ROPgadget supports ELF, PE and Mach-O format on x86, x64, ARM, ARM64, PowerPC, SPARC and MIPS architectures. (github.com)</a></p>
-<h2 id="五、如何防御ROP攻击"><a href="#五、如何防御ROP攻击" class="headerlink" title="五、如何防御ROP攻击"></a>五、如何防御ROP攻击</h2><p>（1）从二进制文件中构造<strong>Gadget Chain</strong>进行防御</p>
-<p>​		1. 指令间填充</p>
-<p><img src="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/image-20230306101816158.png" srcset="/img/loading.gif" lazyload alt="image-20230306101816158"></p>
-<p>​		如上图所示，单独看上面部分，只有<strong>movl</strong>指令和<strong>robl</strong>指令，没有<strong>ret</strong>指令，按理来说不具备成为<strong>Gadget</strong>的可能性，但是由于二进制指令是变长的，所以说从哪里开始我们无法确定，如果从<strong>04</strong>开始的话，<strong>04 d0 c3</strong>就构成了一个<strong>addb</strong>指令+<strong>ret</strong>指令，就成了一个<strong>Gadge</strong>t指令，所以说如果我们在指令之间填充<strong>nop</strong>指令的话，上面的代码片段就无法成为一个<strong>Gadget</strong>了，从而减少<strong>Gadget</strong>的数量。</p>
-<p>​		2. 减少可用代码规模</p>
-<p>​       <strong>libc</strong>中大部分代码很少被使用，程序加载的时候将这部分很少使用的代码直接映射位不可执行，就可以降低构建<strong>Gadget Chain</strong>的概率</p>
-<p>（2）针对栈缓存溢出的防御机制</p>
-<p>​		返回地址是因为栈缓存溢出而被修改的，所以说如果我们能够阻止栈缓存溢出，就可以阻止代码重用攻击。</p>
-<p>（3）从执行Gadget Chain完成攻击进行防御</p>
-<p>​		控制流完整性（<strong>Control Flow Integrity</strong>）检测</p>
+<p>发现在第6位字符不相同，接下来区别于朴素模式匹配算法的就在于子串该怎么移动</p>
+<p>应该做如下移动</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>      a b c a b c m <br></code></pre></td></tr></table></figure>
+
+<p>至于这么移动的合理性，可以自己进行推算，前面的比如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>  a b c a b c m  <br></code></pre></td></tr></table></figure>
+
+<p>这样的是绝对不可能匹配的，因为我们知道对于主串来说，a再次出现的位置在主串的第四位，也就是说在2,3位没有a，可子串是以a开头的，所以必然无法匹配。</p>
+<h2 id="二、最长相等前后缀"><a href="#二、最长相等前后缀" class="headerlink" title="二、最长相等前后缀"></a>二、最长相等前后缀</h2><p>为了方便说明我们移动的具体位置，我们引入<strong>最长相等前后缀</strong>的概念</p>
+<p><strong>abcab</strong></p>
+<p>前缀集合：**{a,ab,abc,abca}**</p>
+<p>后缀集合：**{b,ab,cab,bcab}**</p>
+<p>最长相等前后缀为：<strong>ab</strong></p>
+<p>对于第一次匹配</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>a b c a b c m <br></code></pre></td></tr></table></figure>
+
+<p>相同部分是<strong>abcab</strong>，而它的最长相等前后缀是<strong>ab</strong>，而我们移动的结果就是让子串的最长相等前缀与主串相同部分的最长相等后缀对齐</p>
+<p>即：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>      a b c a b c m <br></code></pre></td></tr></table></figure>
+
+<p>完成这一步之后，接下来的流程就是一个循环过程。</p>
+<p>现在重新捋一遍</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>a b c a b c m <br>           i=<span class="hljs-number">7</span><br></code></pre></td></tr></table></figure>
+
+<p>这是第一遍比较，比较到第7位</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>	  a b c a b c m <br>         i=<span class="hljs-number">7</span><br></code></pre></td></tr></table></figure>
+
+<p>第二遍比较，<strong>i</strong>依旧是<strong>7</strong>。</p>
+<p>所以说我们其实是可以做到i一直增加，那我们只需要考虑<strong>j</strong>的变化了，而j的变化与主串其实没有什么关系，关键在于子串的结构中是否有重复的问题。</p>
+<p>举两个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c++">example <span class="hljs-number">1</span>:<br>a b c d e f g a b...<br>a b c d e x<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">6</span><br><span class="hljs-comment">//下一次比较变成</span><br>a b c d e f g a b...<br>          a b c d e x<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">1</span><br>    <br>example <span class="hljs-number">2</span>:<br>a b c a b a b c a...<br>a b c a b x<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">6</span><br><span class="hljs-comment">//下一次比较变成</span><br>a b c a b a b c a...<br>      a b c a b x...<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">3</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、next数组"><a href="#三、next数组" class="headerlink" title="三、next数组"></a>三、next数组</h2><p>所以<strong>j</strong>的值得多少取决于当前字符之前的串的最长相等前后缀的长度</p>
+<p>比如：<strong>example 1</strong>中，<strong>x</strong>字符之前的串是<strong>a b c d e</strong> ,最长相等前后缀长度为<strong>0</strong>，所以<strong>j</strong>变成<strong>1</strong></p>
+<p>​			<strong>example 2</strong>中，<strong>x</strong>字符之前的串是<strong>a b c a b</strong> ,最长相等前后缀长度为<strong>2</strong>，所以<strong>j</strong>变成<strong>3</strong></p>
+<p>这里用<strong>next[]<strong>数组来保存</strong>最长相等前后缀的长度+1</strong>的值</p>
+<p>这里数组的值可能和上面的说法不一致，用的书上的说法</p>
+<p><img src="/2023/03/06/KMP%E7%AE%97%E6%B3%95/image-20230307163142213.png" srcset="/img/loading.gif" lazyload alt="image-20230307163142213"></p>
+<p>举例：T&#x3D;”abcdex”</p>
+<p>当j&#x3D;1，next[1]&#x3D;0</p>
+<p>当j&#x3D;2，属于其他情况，next[2]&#x3D;1</p>
+<p>当j&#x3D;3，属于其他情况，next[3]&#x3D;1</p>
+<p>当j&#x3D;4，属于其他情况，next[4]&#x3D;1</p>
+<p>所以，此T串的next[j]为011111</p>
+<h2 id="四、KMP算法的改进"><a href="#四、KMP算法的改进" class="headerlink" title="四、KMP算法的改进"></a>四、KMP算法的改进</h2><p>例如：主串S&#x3D;”aaaabcde”，子串T&#x3D;”aaaaax”，其next数组值分别为012345，在开始的时候，当i&#x3D;5、j&#x3D;5的时候，我们发现“b”与”a”不相等，但是回溯之后，还是”a”和”b“比较，这其实是多余的比较，因为我们已经知道了”a”和”b”是必然不等的，所以这就是一个改进的地方。新增的next数组命名为：nextval数组。</p>
+<p>KMP算法的改进为： <strong>如果a位字符与它next值指向的b位字符相等，则该a位的nextval就指向b位的nextval值，如果不等，则该a位的nextval值就是它自己a位的next值。</strong></p>
+<p>PS：KMP算法确实非常的精妙，他的代码的简单性导致理解其中的逻辑非常的困难，在记录这次学习的过程中，也还是仅仅摸到了皮毛，日后再进行改进。。。。。</p>
 
                 
               </div>
@@ -288,8 +300,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>代码重用攻击</div>
-      <div>http://sugar-122.github.io/2023/03/06/代码重用攻击/</div>
+      <div>KMP算法</div>
+      <div>http://sugar-122.github.io/2023/03/06/KMP算法/</div>
     </div>
     <div class="license-meta">
       
@@ -333,18 +345,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/03/06/KMP%E7%AE%97%E6%B3%95/" title="KMP算法">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">KMP算法</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/03/05/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%EF%BC%88CSRF%EF%BC%89/" title="跨站请求伪造(CSRF)">
-                        <span class="hidden-mobile">跨站请求伪造(CSRF)</span>
+                      <a href="/2023/03/06/%E4%BB%A3%E7%A0%81%E9%87%8D%E7%94%A8%E6%94%BB%E5%87%BB/" title="代码重用攻击">
+                        <span class="hidden-mobile">代码重用攻击</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
