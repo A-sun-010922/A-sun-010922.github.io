@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://sugar-122.github.io/img/image-20230304101250375.png">
 <meta property="article:published_time" content="2023-03-04T02:10:37.564Z">
-<meta property="article:modified_time" content="2023-03-04T07:51:52.465Z">
+<meta property="article:modified_time" content="2023-03-21T16:04:25.859Z">
 <meta property="article:author" content="Sugar">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://sugar-122.github.io/img/image-20230304101250375.png">
@@ -185,7 +185,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.5k 字
+          4.8k 字
         
       </span>
     
@@ -196,7 +196,7 @@
         
         
         
-          29 分钟
+          40 分钟
         
       </span>
     
@@ -296,6 +296,23 @@
 
 <p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230304152309622.png" srcset="/img/loading.gif" lazyload alt="image-20230304152309622"></p>
 <p>最终发现得到<strong>root</strong>权限的<strong>shell</strong></p>
+<h2 id="五、拓展"><a href="#五、拓展" class="headerlink" title="五、拓展"></a>五、拓展</h2><p>开启地址空间随机化</p>
+<p>栈的基址空间只有2^19次，这使得可以通过暴力破解的方式进行攻击，即使此时开启了地址空间布局随机化ASLR技术，也完全可以在一定时间内完成攻击。制作一个脚本script.sh，让它一直去执行stack程序，直到成功。</p>
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230322000127279.png" srcset="/img/loading.gif" lazyload alt="script.sh"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">bash script.sh<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2023/03/04/%E4%BB%A3%E7%A0%81%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E4%B8%8E%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB/image-20230322000151958.png" srcset="/img/loading.gif" lazyload alt="暴力破解"></p>
+<p>最终还是可以得到root权限</p>
+<p><strong>现有的防御机制</strong></p>
+<p><strong>a.</strong> <strong>阻止恶意代码的写入：对写入内容进行加密保护</strong>，由硬件对缓冲区中的内容进行自动的加密操作，待读取的时候，由硬件进行解密，即使恶意代码被写入，但是之后跳转到恶意代码后，这个恶意代码是密文的形式，无法执行。但是问题在于，加密算法可以被推测出来；而且由硬件进行加密、解密的操作，开销也是一个问题。</p>
+<p><strong>b.</strong> <strong>对写入缓冲区的内容进行完整性校验</strong>，对缓冲区的内容起始做一个hash值进行保存，函数准备返回的时候，再次对缓冲区的内容做一次hash值，和之前的hash值进行比对，如果相同则正常返回，反之则拒绝跳转。但是实际上缓冲区的内容在实际运行过程中会发生变化，对于hash值的保存也是一个问题，hash值是否会被篡改。</p>
+<p><strong>c. Canary机制</strong>，Canary机制的基本思想是在函数返回地址之前，将一个特殊的值存储在栈上，然后在函数返回时检查这个值是否被修改。如果被修改，说明发生了缓冲区溢出，程序会立即终止，并进行相应的安全处理。同样也存在着问题，对于Canary值我每次进行一个字节的覆盖去猜测，如果程序没有崩溃的话，说明这个字节猜对了，则进行下一字节的猜测，注意每个函数的Canary的值在每一次执行的时候是不一样的，但是对于同一个进程而言它的Canary值是一样的。</p>
+<p><strong>d.</strong> <strong>影子栈</strong>，影子栈是开辟一块栈空间用于存储函数的返回地址，每次将要进行函数的返回的时候，我们进行两个返回地址的比较，如果相同则正常返回，如果不同则拒绝返回。但是问题在于影子栈也有可能会被覆盖，只需要找到一个函数栈帧在影子栈之下，利用这个函数栈帧的缓冲区溢出，对影子栈进行覆写。</p>
+<p><strong>e.</strong> <strong>栈不可执行</strong>：栈不可执行演化出来的问题在于我可以使用return-to-libc攻击，这样的话，我不需要在栈上执行我的代码，只需要在共享库里面寻找所需要的gadget，构成一个gadget chain这样的话就可以就可以绕过栈不可执行而达到攻击的目的。</p>
+<p><strong>f.</strong> <strong>地址空间随机化</strong>，这个防御手段在本次实验中已经试验过了，栈的基址只有219的可能，所以我们一直循环执行我们的攻击程序，总会有一次可以成功碰撞上，只不过需要花费的时间不同。</p>
+<p><strong>g. CFI(控制流完整性)、CFB</strong>：基于硬件的保护机制，CFI机制可以有效地防止控制流劫持攻击，因为通过动态检查控制流，可以在运行时及时发现控制流劫持攻击，并阻止攻击者进一步执行恶意代码。在编译的时候，进行控制流的监控，终点关注jump等跳转指令，将合法的jump指令加入白名单，如果在实际运行的时候，在遇上跳转指令的时候，判断它是否在白名单里面，如果不在的话极有可能发生了缓冲区溢出的问题。</p>
+<p><strong>h. ASan (Address Sanitizer)</strong> 谷歌推出的针对C&#x2F;C++ 的快速内存错误检测工具</p>
+<p><strong>i. HeapHopper</strong> 它是一种用于自动化堆漏洞挖掘的工具，使用模糊测试技术来构造大量的输入来检测可能存在的漏洞。</p>
 
                 
               </div>
