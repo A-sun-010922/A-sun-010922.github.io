@@ -16,12 +16,12 @@
   <meta name="author" content="Sugar">
   <meta name="keywords" content="">
   
-    <meta name="description" content="TCP&#x2F;IP协议栈安全分析–TCPTCP是一种面向连接的协议，它在传输数据之前会建立一条专用的通信连接，意味着在数据传输过程中，两台计算机之间会有一条稳定的数据传输通道。因此，TCP可以保证数据传输的可靠性，但会带来一定的延迟。  一、三次握手1.1 过程分析 （1）Client端发送一个SYN包，请求连接，告诉Server端他的初始序列号是x，此时Client的状态是SYN_SENT">
+    <meta name="description" content="TCP&#x2F;IP协议栈安全分析—TCPTCP是一种面向连接的协议，它在传输数据之前会建立一条专用的通信连接，意味着在数据传输过程中，两台计算机之间会有一条稳定的数据传输通道。因此，TCP可以保证数据传输的可靠性，但会带来一定的延迟。  一、三次握手1.1 过程分析 （1）Client端发送一个SYN包，请求连接，告诉Server端他的初始序列号是x，此时Client的状态是SYN_SENT （2）Se">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP&#x2F;IP协议栈安全分析--TCP">
 <meta property="og:url" content="http://sugar-122.github.io/2023/03/12/TCPIP%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90--TCP/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="TCP&#x2F;IP协议栈安全分析–TCPTCP是一种面向连接的协议，它在传输数据之前会建立一条专用的通信连接，意味着在数据传输过程中，两台计算机之间会有一条稳定的数据传输通道。因此，TCP可以保证数据传输的可靠性，但会带来一定的延迟。  一、三次握手1.1 过程分析 （1）Client端发送一个SYN包，请求连接，告诉Server端他的初始序列号是x，此时Client的状态是SYN_SENT">
+<meta property="og:description" content="TCP&#x2F;IP协议栈安全分析—TCPTCP是一种面向连接的协议，它在传输数据之前会建立一条专用的通信连接，意味着在数据传输过程中，两台计算机之间会有一条稳定的数据传输通道。因此，TCP可以保证数据传输的可靠性，但会带来一定的延迟。  一、三次握手1.1 过程分析 （1）Client端发送一个SYN包，请求连接，告诉Server端他的初始序列号是x，此时Client的状态是SYN_SENT （2）Se">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://sugar-122.github.io/img/TCP.png">
 <meta property="article:published_time" content="2023-03-12T02:57:01.100Z">
@@ -239,7 +239,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="TCP-x2F-IP协议栈安全分析–TCP"><a href="#TCP-x2F-IP协议栈安全分析–TCP" class="headerlink" title="TCP&#x2F;IP协议栈安全分析–TCP"></a>TCP&#x2F;IP协议栈安全分析–TCP</h1><p>TCP是一种面向连接的协议，它在传输数据之前会建立一条专用的通信连接，意味着在数据传输过程中，两台计算机之间会有一条稳定的数据传输通道。因此，TCP可以保证数据传输的可靠性，但会带来一定的延迟。</p>
+                <h1 id="TCP-IP协议栈安全分析—TCP"><a href="#TCP-IP协议栈安全分析—TCP" class="headerlink" title="TCP/IP协议栈安全分析—TCP"></a>TCP/IP协议栈安全分析—TCP</h1><p>TCP是一种面向连接的协议，它在传输数据之前会建立一条专用的通信连接，意味着在数据传输过程中，两台计算机之间会有一条稳定的数据传输通道。因此，TCP可以保证数据传输的可靠性，但会带来一定的延迟。</p>
 <p><img src="/2023/03/12/TCPIP%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90--TCP/image-20230312110155266.png" srcset="/img/loading.gif" lazyload alt="总的过程"></p>
 <h2 id="一、三次握手"><a href="#一、三次握手" class="headerlink" title="一、三次握手"></a>一、三次握手</h2><h3 id="1-1-过程分析"><a href="#1-1-过程分析" class="headerlink" title="1.1 过程分析"></a>1.1 过程分析</h3><p><img src="/2023/03/12/TCPIP%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90--TCP/image-20230312111639293.png" srcset="/img/loading.gif" lazyload alt="三次握手"></p>
 <p>（1）Client端发送一个SYN包，请求连接，告诉Server端他的初始序列号是x，此时Client的状态是SYN_SENT</p>
@@ -258,7 +258,7 @@
 <p>ISN为了让对方知道如何接下来接收数据的时候如何按序列号组装数据。首先，如果 ISN 是固定的，攻击者很容易猜出后续的确认号，因此 ISN 是动态生成的。其次，如果ISN固定是1，client和server建立好一个TCP连接之后，client连续给server发了10个包，这10个包被链路上的路由器缓存了，这个时候client挂掉了，然后client用同样的端口号重新连接上Server，client又连续给server发了几个包，假设这个时候client的序列号是5了，之前滞留的数据包最终到了server端，server给client回复确认号10，但是client此时自己序列号只有5，这就乱了。。。。。。</p>
 <p><strong>Q4：三次握手可以携带数据吗？</strong></p>
 <p>第三次可以携带数据，但是前两次不行，因为第三次的时候client已经是Establish状态了，所以可以确保双方是可信的，但是如果第一次或者第二次携带数据的话，攻击者完全可以发送恶意的SYN包，包里面有着大量的恶意的数据，server就需要大量的空间、时间来保存这些包</p>
-<h3 id="1-2-安全分析"><a href="#1-2-安全分析" class="headerlink" title="1.2 安全分析"></a>1.2 安全分析</h3><h4 id="1-2-1-SYN洪泛攻击"><a href="#1-2-1-SYN洪泛攻击" class="headerlink" title="1.2.1 SYN洪泛攻击"></a>1.2.1 SYN洪泛攻击</h4><p>SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server则回复确认包，并等待Client确认，由于源地址不存在，因此Server需要不断重发直至超时，这些伪造的SYN包将长时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络拥塞甚至系统瘫痪。SYN 攻击是一种典型的 DoS&#x2F;DDoS 攻击。检测 SYN 攻击非常的方便，当你在服务器上看到大量的半连接状态时，特别是源IP地址是随机的，基本上可以断定这是一次SYN攻击。</p>
+<h3 id="1-2-安全分析"><a href="#1-2-安全分析" class="headerlink" title="1.2 安全分析"></a>1.2 安全分析</h3><h4 id="1-2-1-SYN洪泛攻击"><a href="#1-2-1-SYN洪泛攻击" class="headerlink" title="1.2.1 SYN洪泛攻击"></a>1.2.1 SYN洪泛攻击</h4><p>SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server则回复确认包，并等待Client确认，由于源地址不存在，因此Server需要不断重发直至超时，这些伪造的SYN包将长时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络拥塞甚至系统瘫痪。SYN 攻击是一种典型的 DoS/DDoS 攻击。检测 SYN 攻击非常的方便，当你在服务器上看到大量的半连接状态时，特别是源IP地址是随机的，基本上可以断定这是一次SYN攻击。</p>
 <h4 id="1-2-2-序号攻击"><a href="#1-2-2-序号攻击" class="headerlink" title="1.2.2 序号攻击"></a>1.2.2 序号攻击</h4><p>如果攻击者能够预测目标主机选择的起始序号，他就可能欺骗该目标主机，使其相信它正在与一台可信的主机会话。</p>
 <p><img src="/2023/03/12/TCPIP%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90--TCP/image-20230312115524390.png" srcset="/img/loading.gif" lazyload alt="IP欺骗"></p>
 <p><strong>Q1：为什么X必须要对B进行Dos攻击？</strong></p>

@@ -16,12 +16,12 @@
   <meta name="author" content="Sugar">
   <meta name="keywords" content="">
   
-    <meta name="description" content="KMP算法一、KMP算法与朴素模式匹配算法的比较KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。 例如：主串S&#x3D;“abcdehh“，子串T&#x3D;”cde“ 当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”askjdahksjdhalksdlakjdlkajsdlkaldacmee“，就已经让人头痛了吧，用算法来做，很容易">
+    <meta name="description" content="KMP算法一、KMP算法与朴素模式匹配算法的比较KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。 例如：主串S&#x3D;“abcdehh“，子串T&#x3D;”cde“ 当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”askjdahksjdhalksdlakjdlkajsdlkaldacmee“，就已经让人头痛了吧，用算法来做，很容易可以想到用暴力搜索匹">
 <meta property="og:type" content="article">
 <meta property="og:title" content="KMP算法">
 <meta property="og:url" content="http://sugar-122.github.io/2023/03/06/KMP%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="KMP算法一、KMP算法与朴素模式匹配算法的比较KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。 例如：主串S&#x3D;“abcdehh“，子串T&#x3D;”cde“ 当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”askjdahksjdhalksdlakjdlkajsdlkaldacmee“，就已经让人头痛了吧，用算法来做，很容易">
+<meta property="og:description" content="KMP算法一、KMP算法与朴素模式匹配算法的比较KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。 例如：主串S&#x3D;“abcdehh“，子串T&#x3D;”cde“ 当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”askjdahksjdhalksdlakjdlkajsdlkaldacmee“，就已经让人头痛了吧，用算法来做，很容易可以想到用暴力搜索匹">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://sugar-122.github.io/img/KMP.png">
 <meta property="article:published_time" content="2023-03-06T12:55:51.747Z">
@@ -185,7 +185,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k 字
+          1.8k 字
         
       </span>
     
@@ -196,7 +196,7 @@
         
         
         
-          17 分钟
+          16 分钟
         
       </span>
     
@@ -240,59 +240,51 @@
               <div class="markdown-body">
                 
                 <h1 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h1><h2 id="一、KMP算法与朴素模式匹配算法的比较"><a href="#一、KMP算法与朴素模式匹配算法的比较" class="headerlink" title="一、KMP算法与朴素模式匹配算法的比较"></a>一、KMP算法与朴素模式匹配算法的比较</h2><p>KMP算法是一个字符串匹配的快速算法，在一个已知字符串中查找子串的位置，也叫做串的模式匹配。</p>
-<p>例如：主串S&#x3D;“<code>abcdehh</code>“，子串T&#x3D;”<code>cde</code>“</p>
+<p>例如：主串S=“<code>abcdehh</code>“，子串T=”<code>cde</code>“</p>
 <p>当字符串长度很小的时候，自然很容易看出来，但是如果字符串是这样的”<code>askjdahksjdhalksdlakjdlkajsdlkaldacmee</code>“，就已经让人头痛了吧，用算法来做，很容易可以想到用暴力搜索匹配就行，就是从主串的第一个字符开始查询，进行匹配，如果不符合就到主串的第二个字符进行查询，直到找到子串。这种方法也就是<code>朴素模式匹配算法</code>。</p>
-<p>朴素模式匹配算法在最好情况下时间复杂度为O(n)，即子串的n个字符正好等于主串的前n个字符，而最坏的情况下**时间复杂度为O(m*n)**。即找到最后一个子串才匹配成功。</p>
+<p>朴素模式匹配算法在最好情况下时间复杂度为O(n)，即子串的n个字符正好等于主串的前n个字符，而最坏的情况下<strong>时间复杂度为O(m*n)</strong>。即找到最后一个子串才匹配成功。</p>
 <p>而为了提高效率，我们推出了<strong>KMP</strong>算法，有一说一，这个算法非常烧脑</p>
 <p>对于给定的一个主串：<strong>abcabdacbademc</strong>，一个给定的子串：<strong>abcabcm</strong></p>
 <p>我们第一次比较必然是这样的：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>a b c a b c m  <br></code></pre></td></tr></table></figure>
-
 <p>发现在第6位字符不相同，接下来区别于朴素模式匹配算法的就在于子串该怎么移动</p>
 <p>应该做如下移动</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>      a b c a b c m <br></code></pre></td></tr></table></figure>
-
 <p>至于这么移动的合理性，可以自己进行推算，前面的比如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>  a b c a b c m  <br></code></pre></td></tr></table></figure>
-
 <p>这样的是绝对不可能匹配的，因为我们知道对于主串来说，a再次出现的位置在主串的第四位，也就是说在2,3位没有a，可子串是以a开头的，所以必然无法匹配。</p>
 <h2 id="二、最长相等前后缀"><a href="#二、最长相等前后缀" class="headerlink" title="二、最长相等前后缀"></a>二、最长相等前后缀</h2><p>为了方便说明我们移动的具体位置，我们引入<strong>最长相等前后缀</strong>的概念</p>
 <p><strong>abcab</strong></p>
-<p>前缀集合：**{a,ab,abc,abca}**</p>
-<p>后缀集合：**{b,ab,cab,bcab}**</p>
+<p>前缀集合：<strong>{a,ab,abc,abca}</strong></p>
+<p>后缀集合：<strong>{b,ab,cab,bcab}</strong></p>
 <p>最长相等前后缀为：<strong>ab</strong></p>
 <p>对于第一次匹配</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>a b c a b c m <br></code></pre></td></tr></table></figure>
-
 <p>相同部分是<strong>abcab</strong>，而它的最长相等前后缀是<strong>ab</strong>，而我们移动的结果就是让子串的最长相等前缀与主串相同部分的最长相等后缀对齐</p>
 <p>即：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>      a b c a b c m <br></code></pre></td></tr></table></figure>
-
 <p>完成这一步之后，接下来的流程就是一个循环过程。</p>
 <p>现在重新捋一遍</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>a b c a b c m <br>           i=<span class="hljs-number">7</span><br></code></pre></td></tr></table></figure>
-
 <p>这是第一遍比较，比较到第7位</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">a b c a b d a c b a d e m c<br>	  a b c a b c m <br>         i=<span class="hljs-number">7</span><br></code></pre></td></tr></table></figure>
-
 <p>第二遍比较，<strong>i</strong>依旧是<strong>7</strong>。</p>
 <p>所以说我们其实是可以做到i一直增加，那我们只需要考虑<strong>j</strong>的变化了，而j的变化与主串其实没有什么关系，关键在于子串的结构中是否有重复的问题。</p>
 <p>举两个例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c++">example <span class="hljs-number">1</span>:<br>a b c d e f g a b...<br>a b c d e x<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">6</span><br><span class="hljs-comment">//下一次比较变成</span><br>a b c d e f g a b...<br>          a b c d e x<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">1</span><br>    <br>example <span class="hljs-number">2</span>:<br>a b c a b a b c a...<br>a b c a b x<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">6</span><br><span class="hljs-comment">//下一次比较变成</span><br>a b c a b a b c a...<br>      a b c a b x...<br>         i=<span class="hljs-number">6</span>,j=<span class="hljs-number">3</span><br></code></pre></td></tr></table></figure>
-
 <h2 id="三、next数组"><a href="#三、next数组" class="headerlink" title="三、next数组"></a>三、next数组</h2><p>所以<strong>j</strong>的值得多少取决于当前字符之前的串的最长相等前后缀的长度</p>
 <p>比如：<strong>example 1</strong>中，<strong>x</strong>字符之前的串是<strong>a b c d e</strong> ,最长相等前后缀长度为<strong>0</strong>，所以<strong>j</strong>变成<strong>1</strong></p>
-<p>​			<strong>example 2</strong>中，<strong>x</strong>字符之前的串是<strong>a b c a b</strong> ,最长相等前后缀长度为<strong>2</strong>，所以<strong>j</strong>变成<strong>3</strong></p>
-<p>这里用<strong>next[]<strong>数组来保存</strong>最长相等前后缀的长度+1</strong>的值</p>
+<p>​            <strong>example 2</strong>中，<strong>x</strong>字符之前的串是<strong>a b c a b</strong> ,最长相等前后缀长度为<strong>2</strong>，所以<strong>j</strong>变成<strong>3</strong></p>
+<p>这里用<strong>next[]</strong>数组来保存<strong>最长相等前后缀的长度+1</strong>的值</p>
 <p>这里数组的值可能和上面的说法不一致，用的书上的说法</p>
 <p><img src="/2023/03/06/KMP%E7%AE%97%E6%B3%95/image-20230307163142213.png" srcset="/img/loading.gif" lazyload alt="image-20230307163142213"></p>
-<p>举例：T&#x3D;”abcdex”</p>
-<p>当j&#x3D;1，next[1]&#x3D;0</p>
-<p>当j&#x3D;2，属于其他情况，next[2]&#x3D;1</p>
-<p>当j&#x3D;3，属于其他情况，next[3]&#x3D;1</p>
-<p>当j&#x3D;4，属于其他情况，next[4]&#x3D;1</p>
+<p>举例：T=”abcdex”</p>
+<p>当j=1，next[1]=0</p>
+<p>当j=2，属于其他情况，next[2]=1</p>
+<p>当j=3，属于其他情况，next[3]=1</p>
+<p>当j=4，属于其他情况，next[4]=1</p>
 <p>所以，此T串的next[j]为011111</p>
-<h2 id="四、KMP算法的改进"><a href="#四、KMP算法的改进" class="headerlink" title="四、KMP算法的改进"></a>四、KMP算法的改进</h2><p>例如：主串S&#x3D;”aaaabcde”，子串T&#x3D;”aaaaax”，其next数组值分别为012345，在开始的时候，当i&#x3D;5、j&#x3D;5的时候，我们发现“b”与”a”不相等，但是回溯之后，还是”a”和”b“比较，这其实是多余的比较，因为我们已经知道了”a”和”b”是必然不等的，所以这就是一个改进的地方。新增的next数组命名为：nextval数组。</p>
+<h2 id="四、KMP算法的改进"><a href="#四、KMP算法的改进" class="headerlink" title="四、KMP算法的改进"></a>四、KMP算法的改进</h2><p>例如：主串S=”aaaabcde”，子串T=”aaaaax”，其next数组值分别为012345，在开始的时候，当i=5、j=5的时候，我们发现“b”与”a”不相等，但是回溯之后，还是”a”和”b“比较，这其实是多余的比较，因为我们已经知道了”a”和”b”是必然不等的，所以这就是一个改进的地方。新增的next数组命名为：nextval数组。</p>
 <p>KMP算法的改进为： <strong>如果a位字符与它next值指向的b位字符相等，则该a位的nextval就指向b位的nextval值，如果不等，则该a位的nextval值就是它自己a位的next值。</strong></p>
 <p>PS：KMP算法确实非常的精妙，他的代码的简单性导致理解其中的逻辑非常的困难，在记录这次学习的过程中，也还是仅仅摸到了皮毛，日后再进行改进。。。。。</p>
 
