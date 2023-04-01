@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://sugar-122.github.io/img/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.png">
 <meta property="article:published_time" content="2023-03-29T07:30:02.250Z">
-<meta property="article:modified_time" content="2023-03-30T13:46:39.851Z">
+<meta property="article:modified_time" content="2023-04-01T06:42:26.102Z">
 <meta property="article:author" content="Sugar">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://sugar-122.github.io/img/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.png">
@@ -185,7 +185,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.8k 字
+          14k 字
         
       </span>
     
@@ -196,7 +196,7 @@
         
         
         
-          49 分钟
+          116 分钟
         
       </span>
     
@@ -375,6 +375,136 @@
 <p><strong>IP模块的处理：</strong>IP模块收到IP包首部及后面的数据部分以后，也做类似的处理，如果判断得出包首部中的IP地址与自己的IP地址匹配，则可接收数据并从中查找上一层的协议，传给相应的模块处理。</p>
 <p><strong>TCP模块的处理：</strong>在TCP模块中，首先会计算一下校验和，判断数据是否被破坏，然后检查是否在按照序号接收数据，最后检查端口号，确定具体的应用程序。数据接收完毕后，接收端发送“确认回执”给发送端，如果这个回执信息未能达到发送端，那么发送端就会认为接收端没有接收到数据而一直反复发送。数据被完整地接收以后，会传给由端口识别的应用程序。</p>
 <p><strong>应用程序的处理：</strong>接收端应用程序会直接接收发送端发送的数据。通过解析数据可以获取邮件的收件人地址是乙的地址，如果主机B上没有乙的邮件信箱，那么主机B返回给发送一个“无此收件地址”的报错信息。</p>
+<h2 id="第三章-数据链路"><a href="#第三章-数据链路" class="headerlink" title="第三章 数据链路"></a>第三章 数据链路</h2><p>数据链路，指OSI参考模型中的数据链路层，有时也指以太网、无线局域网等通信手段。</p>
+<p>数据链路层的协议定义了通过通信媒介互连的设备之间传输的规范，通信媒介包括双绞线电缆，同轴电缆，光纤，电波以及红外线等介质。此外，各个设备之间有时也会通过交换机、网桥、中继器等中转数据。</p>
+<p><strong>MAC地址：</strong>MAC地址用于识别数据链路中互连的结点。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331170749749.png" srcset="/img/loading.gif" lazyload alt="MAC地址"></p>
+<p><strong>MAC地址长48比特</strong></p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331170924346.png" srcset="/img/loading.gif" lazyload alt="MAC地址"></p>
+<h3 id="3-1-传输"><a href="#3-1-传输" class="headerlink" title="3.1 传输"></a>3.1 传输</h3><h4 id="3-1-1-共享介质型网络"><a href="#3-1-1-共享介质型网络" class="headerlink" title="3.1.1 共享介质型网络"></a>3.1.1 <strong>共享介质型网络</strong></h4><p>从通信介质的使用方法上看，网络可以分为共享介质型和非共享介质型。共享介质型网络织由多个设备共享一个通信介质的一种网络。最早的以太网和FDDI就是介质共享型网络，这种方式下，设备之间使用同一个载波信道进行发送和接收，为此基本上采用半双工通信方式，并有必要对介质进行访问控制。共享介质型网络中有两种介质访问控制方式：一种是<strong>争用方式</strong>，另一种是<strong>令牌传递方式</strong>。</p>
+<p><strong>争用方式：</strong>指争夺数据传输的权利，也加CSMA(载波监听多路访问)。这种方法通常令网络中的各个站采用先到先得的方式占用信道发送数据，如果多个站同时发送帧，则会产生冲突现象，导致网络拥堵和性能下降。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331172744540.png" srcset="/img/loading.gif" lazyload alt="CSMA"></p>
+<p>改良CSMA的另一种方式：<strong>CSMA/CD</strong>方式，它要求每一个站提前检查冲突，一旦发生冲突，则尽早释放信道。</p>
+<p>工作原理：</p>
+<p>（1）如果载波信道上没有数据流动，则任何站都可以发送数据。</p>
+<p>（2）检查是否会发生冲突，一旦发生冲突，发起发送数据，同时立即释放载波信道</p>
+<p>（3）放弃发送以后，随机延时一段时间，再重新争用介质，重新发送帧。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331172758635.png" srcset="/img/loading.gif" lazyload alt="CSMA/CD"></p>
+<p><strong>令牌传递方式：</strong>令牌传递方式是沿着令牌环发送一种叫做“令牌”的特殊报文，是控制传输的一种方式，只有获得令牌的站才能发送数据。</p>
+<p><strong>特点：</strong>一是不会有冲突，二是每个站都有通过平等循环获得令牌的机会。但是一个站在没有收到令牌前不能发送数据帧， 因此在网络不太拥堵的情况下数据链路的利用率也就达不到100%。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331211409656.png" srcset="/img/loading.gif" lazyload alt="令牌传递"></p>
+<h4 id="3-1-2-非共享介质网络"><a href="#3-1-2-非共享介质网络" class="headerlink" title="3.1.2 非共享介质网络"></a>3.1.2 <strong>非共享介质网络</strong></h4><p>不共享介质，是对介质采取专用的一种传输控制方式。在这种方式下，网络中的每个站直连交换机，由交换机负责转发数据帧。不共享通信介质，通常采用全双工通信方式。在这种一对一连接全双工通信的方式下不会发生冲突，可以实现高效的通信。</p>
+<p>但是如果交换机损坏，与之相连的所有计算机之间都将无法通信。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331211925563.png" srcset="/img/loading.gif" lazyload alt="非共享介质网络"></p>
+<h3 id="3-2-转发"><a href="#3-2-转发" class="headerlink" title="3.2 转发"></a>3.2 转发</h3><h4 id="3-2-1-根据MAC地址转发"><a href="#3-2-1-根据MAC地址转发" class="headerlink" title="3.2.1 根据MAC地址转发"></a>3.2.1 <strong>根据MAC地址转发</strong></h4><p>以太网交换机就是持有多个端口的网桥，它们根据数据链路层中的每个帧的目标MAC地址，决定从哪个网络接口发送数据，这张表叫做地址转发表。其内容不需要使用者在每个终端或交换机上手工设置，而是可以自动生成。</p>
+<p>数据链路层的每个通过点在接收到包的时候，会从中将源MAC地址以及曾经接收该地址发送的数据包的接口作为对应关系记录到转发表中。以某个MAC地址作为源地址的包由某一接口接收，实质上可以理解为该MAC地址就是该接口的目标。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331213542976.png" srcset="/img/loading.gif" lazyload alt="MAC地址转发"></p>
+<p><strong>交换机的转发方式：</strong><code>存储转发</code>和<code>直通转发</code></p>
+<p>存储转发方式检查以太网数据帧末尾的FCS(Frame Cheack Sequence)位再进行转发。因此，可以避免发送由于冲突而被破坏的帧或噪声导致的错误帧。</p>
+<p>直通转发方式不需要完全接收就可以转发，具有演示较短的优势，但是同时也不可避免的发送错误帧的可能性。</p>
+<h4 id="3-2-2-环路检测技术"><a href="#3-2-2-环路检测技术" class="headerlink" title="3.2.2 环路检测技术"></a>3.2.2 <strong>环路检测技术</strong></h4><p>通过网桥连接网络的时候，一旦出现环路该怎么处理？在计算机网络中，当两个或多个网桥（或交换机）通过多条路径连接时，可能会形成环路。这种情况下，数据包可能会在环路中不断地被转发，从而导致网络出现问题。 具体来说，当一个数据包到达一个环路中的交换机时，交换机会将该数据包向所有的连线端口进行广播。由于环路的存在，某些交换机会将该数据包再次广播到环路的另一个交换机上，这个交换机也会将该数据包再次广播，以此类推，数据包会在环路中不断地循环转发。这种情况下，网络中的带宽会被大量消耗，从而导致网络拥塞、延迟等问题。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331214929385.png" srcset="/img/loading.gif" lazyload alt="环路"></p>
+<p>所以必须要解决掉环路的这个问题。</p>
+<p><strong>生成树方式</strong></p>
+<p>每个网桥必须在每1~10秒内相互交换BPDU包，从而判断哪些端口使用哪些不适用，以便消除环路。一旦发生故障，则自动切换通信线路，利用那些没有被使用的端口继续进行传输。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331215449544.png" srcset="/img/loading.gif" lazyload alt="生成树方式"></p>
+<p>弊端在于发生故障切换网络的时候需要几十秒的时间，为了解决这个用时过长的问题，定义了一个叫RSTP的方法，这个方法可以将发生问题的时候恢复时间缩短到几秒内。</p>
+<p><strong>源路由法</strong></p>
+<p>它允许发送方指定数据包在传输过程中所经过的路由结点，在源路由协议中，每个数据包都携带有完整的路由信息，因此可以避免网络中的路由查找过程，提高了网络传输的效率。即使网桥中出现了环路，数据帧也不会反复转发，可成功地发送到目标地址。</p>
+<h4 id="3-2-3-VLAN"><a href="#3-2-3-VLAN" class="headerlink" title="3.2.3 VLAN"></a>3.2.3 VLAN</h4><p>为什么要引入VLAN技术？在大型企业或组织中网络管理和数据传输的问题。在传统的网络结构中，所有设备都连接在同一个广播域内，这会造成很多问题，比如安全性问题，任何一个设备都可以轻易地嗅探到其他设备的数据流，从而造成数据泄露和安全问题。广播风暴问题：当一个设备向广播域内发送广播数据包的时候，所有设备都会接收到该数据包，从而导致网络拥堵和性能下降。网络管理非常困难，常常需要更改网络拓扑结构，所以我们需要引入VLAN技术。</p>
+<p>VLAN：虚拟局域网，它将一个物理的广播域划分成多个逻辑上的广播域，使得不同的设备可以被分配到不同的VLAN中，实现更加精细的网络管理和控制。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331221220718.png" srcset="/img/loading.gif" lazyload alt="VLAN"></p>
+<p>如果是异构的两个网段之间，就需要利用具有路由功能的交换机(如3层交换机)，异构的两个网段的意思就是指代两个不同类型的网络，例如一个局域网和一个广域网、一个有线网络和一个无线网络。对于这种VLAN进行扩展，又定义了IEEE802.1Q的标准(TAG VLAN)，该标准允许包含跨越异构交换机的网段，TAG VLAN中对每个网段都用一个VLAN ID的标签进行唯一标识。在交换机中传输帧的时候，在以太网首部加入这个VID标签，根据这个值决定将数据帧发送给哪个网段。</p>
+<p>使用了VLAN技术，不必再重新修改布线，只要修改网段即可。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331222443473.png" srcset="/img/loading.gif" lazyload alt="VLAN"></p>
+<h3 id="3-3-以太网"><a href="#3-3-以太网" class="headerlink" title="3.3 以太网"></a>3.3 以太网</h3><p>最为著名的，使用最为广泛的数据链路—以太网</p>
+<p><strong>以太网分类</strong>：通信电缆的速度</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331223320875.png" srcset="/img/loading.gif" lazyload alt="以太网分类"></p>
+<h4 id="以太网帧格式"><a href="#以太网帧格式" class="headerlink" title="以太网帧格式"></a>以太网帧格式</h4><p>以太网帧前端有一个叫做前导码的部分（8字节），由0,1数字交替组合而成。表示一个以太网帧的开始，也是对端网卡能够确保与其同步的标志</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331225136063.png" srcset="/img/loading.gif" lazyload alt="以太网帧前导码"></p>
+<p>它可以根据同步码SDF进行同步，前导码的意义不仅仅在于同步，准确定位数据帧的开始位置，并在正确的时间开始接收数据，还可以区分与其他通信协议的冲突，前导码的长度和内容是固定的，因此如果使用其他通信协议的数据帧与以太网数据帧发生冲突时，接收方可以通过前导码来识别这个数据帧不是以太网数据帧，并将其丢弃。</p>
+<p>以太网帧本体的前端是以太网的首部，共占14字节，分别是6个字节的目标MAC地址，6个字节的源MAC地址以及2个字节的上层协议类型</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331225901750.png" srcset="/img/loading.gif" lazyload alt="以太网帧结构"></p>
+<p>可以根据Type/Length来区分两种帧的格式，如果Type/Length&gt;1500，则是以太网帧体格式；如果Type/Length&lt;1500，则是IEEE802.3以太网帧体格式</p>
+<p>Type类型：IP（0x0800)、ARP(0x0806)、RARP(0x8035)、IPv6(0x86DD)</p>
+<p>帧最后的FCS可以检查帧时候有所损坏。FCS保存着整个帧除以生成多项式的余数。</p>
+<p>在VLAN中，帧的格式又会发生变化</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331231025136.png" srcset="/img/loading.gif" lazyload alt="VLAN中以太网帧格式"></p>
+<p><strong>LLC和SNAP</strong></p>
+<p>如果对数据链路层分为两层，可以分为介质访问控制层和逻辑链路控制层，介质访问控制层根据以太网或FDDI等不同数据链路所持有的首部信息进行控制，与之相比，逻辑链路层则根据以太网或FDDI等不同数据链路所共有的帧头信息进行控制。当类型字段的值为1500时，表示IEEE802.3以太网帧的长度，此时，即使参考类型对照表也无法确定上层协议的类型，所以就需要根据LLC/SNAP才能判断上层协议的类型。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230331231646245.png" srcset="/img/loading.gif" lazyload alt></p>
+<h3 id="3-4-无线通信"><a href="#3-4-无线通信" class="headerlink" title="3.4 无线通信"></a>3.4 无线通信</h3><h4 id="3-4-1-无线通信的种类"><a href="#3-4-1-无线通信的种类" class="headerlink" title="3.4.1 无线通信的种类"></a>3.4.1 无线通信的种类</h4><p>根据通信距离进行分类</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401101325216.png" srcset="/img/loading.gif" lazyload alt="分类"></p>
+<h4 id="3-4-2-IEEE802-11"><a href="#3-4-2-IEEE802-11" class="headerlink" title="3.4.2 IEEE802.11"></a>3.4.2 IEEE802.11</h4><p>IEEE802.11定义了无线LAN协议中物理层与数据链路层的一部分(MAC层)，MAC层中物理地址与以太网相同，都是用MAC地址，而介质访问上则使用CSAM/CD相似的CSAM/CA方式，通常采用无线基站并通过高基站实现通信。</p>
+<p>IEEE802.11在物理层上使用<strong>电磁波或红外线</strong></p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401101819535.png" srcset="/img/loading.gif" lazyload alt></p>
+<h4 id="3-4-3-IEEE802-11b和IEEE802-11g"><a href="#3-4-3-IEEE802-11b和IEEE802-11g" class="headerlink" title="3.4.3 IEEE802.11b和IEEE802.11g"></a>3.4.3 IEEE802.11b和IEEE802.11g</h4><p>IEEE802.11b和IEEE802.11g是2.4G频段中的无线局域网标准。最大传输速度可以达到11Mbps和54Mbps，通信距离可达30-50米，与IEEE802.11相似，在介质访问控制层中使用CSMA/CA方式，以基站作为中介进行通信。</p>
+<p>CSMA/CA协议的原理如下：</p>
+<ol>
+<li>载波侦听：当一个终端需要发送数据时，首先要侦听信道上是否有其他终端正在传输数据。如果信道上没有其他终端在发送数据，则该终端可以开始发送数据；如果信道上有其他终端正在发送数据，则该终端需要等待一段时间再重复这个过程。</li>
+<li>随机退避：如果两个终端同时开始发送数据，就会发生冲突。当发生冲突时，两个终端都会停止发送数据，并随机等待一段时间后再次尝试发送数据，以避免再次发生冲突。这个等待时间是随机的，并且每次发生冲突后都会加倍。</li>
+<li>冲突避免：为了进一步减少冲突的发生，CSMA/CA协议引入了一种称为“RTS/CTS握手”的机制。在发送数据之前，发送端会先发送一个请求发送（RTS）帧给接收端，请求发送端口发送数据。接收端收到请求后，回复一个清除发送（CTS）帧，表示信道空闲，发送端可以开始发送数据。在这个过程中，其他终端都会保持沉默，避免对信道的干扰。</li>
+<li>重传机制：如果数据在传输过程中发生错误，接收端会发送一个确认（ACK）帧，表示收到了正确的数据。如果发送端没有收到确认帧，则会认为数据发送失败，需要重新发送数据。</li>
+</ol>
+<h4 id="3-4-4-IEEE802-11a"><a href="#3-4-4-IEEE802-11a" class="headerlink" title="3.4.4 IEEE802.11a"></a>3.4.4 IEEE802.11a</h4><p>在物理层利用5GHz频段，最大传输速度可达54Mbps的一种无线通信标准，与IEEE802.11b/g存在一定的兼容性问题，但是市场上已经有支持这两方面的基站产品，再加上它不适用2.4GHz频段，因此也不易受干扰</p>
+<h4 id="3-4-5-IEEE802-11n"><a href="#3-4-5-IEEE802-11n" class="headerlink" title="3.4.5 IEEE802.11n"></a>3.4.5 IEEE802.11n</h4><p>IEEEE802.11n实在IEEE802.11g和IEEE802.11a的基础上，采用同步多条天线的MIMO技术，实现高速无线通信的一种标准，在物理层使用2.4GHz或5GHz频段。在使用5GHz频段的情况下，如果不受其他2.4GHz频段系统的干扰，IEEE802.11n可以达到IEEE802.11a/b/g的几倍带宽（40MHz)，最大传输速度可以达到150Mps</p>
+<h4 id="3-4-6-使用无线LAN时的注意事项"><a href="#3-4-6-使用无线LAN时的注意事项" class="headerlink" title="3.4.6 使用无线LAN时的注意事项"></a>3.4.6 使用无线LAN时的注意事项</h4><p>无线LAN允许使用者可以自由地移动位置、自由地放置设备，通过无线电波实现较广范围的通信，意味着在通信范围内，任何人都可以使用该无线LAN，因此会有被盗听或篡改的危险。</p>
+<p>在无线LAN的标准中，为防止盗听或篡改，已定义可以对传输数据进行加密。</p>
+<p>此外，无线LAN可以无需牌照使用特定频段，所以可能会受到其他通信设备的干扰，导致信号不稳定。</p>
+<h4 id="3-4-7-蓝牙"><a href="#3-4-7-蓝牙" class="headerlink" title="3.4.7 蓝牙"></a>3.4.7 蓝牙</h4><p>蓝牙与IEEE802.11b/g类似，是使用2.4GHz频率无线电波的一种标准</p>
+<h4 id="3-4-8-WIMAX"><a href="#3-4-8-WIMAX" class="headerlink" title="3.4.8 WIMAX"></a>3.4.8 WIMAX</h4><p>WiMAX是使用微波在企业或家庭使用无线通信的一种方式。它如DSL或FTTH一样，是实现无线网络关键步骤的一种方式。</p>
+<h4 id="3-4-9-ZigBee"><a href="#3-4-9-ZigBee" class="headerlink" title="3.4.9 ZigBee"></a>3.4.9 ZigBee</h4><p>ZigBee主要应用于家电的远程控制，是一种短距离，低功耗的无线通信技术，它最多允许65536个终端之间互连通信。ZigBee的传输速度随着所使用的频率有所变化。</p>
+<h3 id="3-5-PPP"><a href="#3-5-PPP" class="headerlink" title="3.5 PPP"></a>3.5 PPP</h3><h4 id="3-5-1-PPP定义"><a href="#3-5-1-PPP定义" class="headerlink" title="3.5.1 PPP定义"></a>3.5.1 PPP定义</h4><p>PPP是指点对点，即1对1连接计算机的协议。PPP相当于位于OSI参考模型第2层的数据链路层。</p>
+<p>PPP是纯粹的数据链路层，与物理层没有任何关系。仅有PPP无法实现通信，还需要有物理层的支持。以太网是在物理层和数据链路层上运行的协议。</p>
+<h4 id="3-5-2-LCP和NCP"><a href="#3-5-2-LCP和NCP" class="headerlink" title="3.5.2 LCP和NCP"></a>3.5.2 LCP和NCP</h4><p>在开始进行数据传输前，要先建立一个PPP级的连接，当这个连接建立以后就可以进行身份认证、压缩与加密。</p>
+<p>在PPP的主要功能中包含两个协议：一个是不依赖上层的LCP协议，另一个是依赖上层的NCP协议，如果上层是IP，此时的NCP也叫做IPCP。</p>
+<p>LCP(Link Control Protocol)主要负责建立和断开连接、设置最大接收单元(MRU,Maximum Receive Unit)、设置验证协议(PAP或CHAP)以及设置是否进行通信质量的监控。</p>
+<p>IPCP（IP Control Protocol）负责IP地址设置以及是否进行TCP/IP首部压缩等设置</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401110429595.png" srcset="/img/loading.gif" lazyload alt="PPP"></p>
+<p>通过PPP连接时，通常需要进行用户名密码的验证，并且对通信两端进行双方向的验证。其验证协议有两种，分别是PAP和CHAP</p>
+<p>PAP是PPP连接建立时，需要两次握手进行用户名和密码验证。其中密码是明文方式传输，因此一般用户安全要求并不很高的环境，否则会有窃听或盗用连接的危险。</p>
+<p>PAP（Password Authentication Protocol）是PPP协议族中的一种简单的认证协议，用于在PPP链路上进行用户身份验证。它的原理如下：首先被认证方向认证方发送认证请求（包含用户名和密码），以明文形式进行传输，认证方接到认证请求，再根据被认证方发送来的用户名去到自己的数据库认证用户名密码是否正确，如果密码正确，PAP认证通过，如果用户名密码错误，PAP认证未通过。</p>
+<p>CHAP则使用一次性密码OTP，可以有效防止窃听。此外，在建立连接后还可以进行定期的密码交换，用来检验对端是否中途被替换。</p>
+<p>CHAP原理：<br>在CHAP认证过程中，客户端需要使用自己的密码对服务端发送的挑战值进行计算，生成一个响应值。具体来说，计算的过程如下：</p>
+<ol>
+<li>客户端接收到服务端发送的挑战值后，将自己的密码和挑战值拼接在一起，使用一个哈希算法（如MD5）对拼接后的字符串进行摘要计算。</li>
+<li>客户端将计算出的摘要作为响应值发送给服务端。</li>
+<li>服务端接收到客户端发送的响应值后，按照同样的方式计算摘要，并与客户端发送的响应值进行比较。如果两者相同，则认为客户端的身份验证通过，否则认为验证失败。</li>
+</ol>
+<p>在CHAP认证过程中，客户端不是将自己的密码明文发送给服务端，而是将密码和挑战值进行结合，使用哈希算法计算出一个摘要后发送给服务端。这样做的好处在于，即使攻击者能够截获认证请求，也无法获取密码的明文，从而增加了认证的安全性。</p>
+<h4 id="3-5-3-PPP的帧格式"><a href="#3-5-3-PPP的帧格式" class="headerlink" title="3.5.3 PPP的帧格式"></a>3.5.3 PPP的帧格式</h4><p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401132318029.png" srcset="/img/loading.gif" lazyload alt="PPP的帧格式"></p>
+<p>标志码用来区分每个帧，这一点与HDLC协议非常相似。</p>
+<p>HDLC就是在每个帧的前后加上一个8位字节“01111110”用来区分帧。这一个8位字节叫做标志码，在这两个标志码中间不允许出现连续6个以上的“1“，因此在发送帧的时候，当出现连续5个”1“时后面必须插入一个0。而当接收端在接收帧的时候，如果收到连续的5个”1“且后面跟着的是0，就必须删除。由于最多只会出现5个连续的”1“，就可以比较容易地通过标志码区分帧的起始与终止。而PPP标准帧格式完全一致。</p>
+<h4 id="3-5-4-PPPoE"><a href="#3-5-4-PPPoE" class="headerlink" title="3.5.4 PPPoE"></a>3.5.4 PPPoE</h4><p>单纯的以太网没有验证功能，也没有建立和断开连接的处理，因此无法按时计费，而如果采用PPPoE管理以太网连接，就可以利用PPP的验证等功能使各家ISP可以有效的管理终端用户的使用。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401133434714.png" srcset="/img/loading.gif" lazyload alt="PPPoE"></p>
+<h3 id="3-6-其他数据链路"><a href="#3-6-其他数据链路" class="headerlink" title="3.6 其他数据链路"></a>3.6 其他数据链路</h3><h4 id="3-6-1-ATM"><a href="#3-6-1-ATM" class="headerlink" title="3.6.1 ATM"></a>3.6.1 ATM</h4><p>ATM是以一个叫做信元（5字节首部加48字节数据）的单位进行传输的数据链路，由于其线路占用时间短和能够高效传输大容量数据等特点主要用于广域网络的连接。</p>
+<p><strong>ATM的特点：</strong>ATM是面向连接的一种数据链路，因此在进行通信传输之前一定要设置通信线路。ATM中没有类似以太网和FDDI那种发送权限的限制，它允许在任何时候发送任何数据，因此，当大量计算机同时发送大量数据时容易引发网络拥堵甚至使网络进入收敛状态，为了防止这一现象的出现，ATM中增加了限制带宽的功能。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401133857974.png" srcset="/img/loading.gif" lazyload alt="ATM"></p>
+<p><strong>同步与异步：</strong>以多个通信设备通过一条电缆相连的情况为例。这样连接的设备叫做TDM（时分复用设备）。TDM通常在两端TDM设备之间同步的同时，按照特定的时间将每个帧分成若干个时隙，按照顺序发送给目标地址。但是可能会造成许多空闲的时隙，利用率比较低。</p>
+<p>ATM扩展了TDM，能够有效地提高线路的利用率，ATM在TDM的时隙中放入数据时，并非按照线路的顺序而是按照数据到达的顺序放入。</p>
+<p>但是数据包传输顺序并不是简单地按照数据包到达的顺序进行发送，而是要根据VCI/VPI的信息对ATM单元进行排队和调度，排队与调度的原则主要是根据不同的服务质量要求，进行优先级、带宽保障、拥塞控制等方面的设置，从而保证网络的性能和数据流的传输顺序。</p>
+<p>但是这样的话接收端必须要能够辨认真正的内容，为此发送端需要附加一个5字节的包首部，包含VPI、VCI等识别码用来标识具体的通信类型。这种VPI与VCI的值只在直连通信的两个ATM交换机之间设置，在其他交换机之间意思则完全不同。</p>
+<p>ATM中信元传输所占用的时隙不固定，一个帧所占用的时隙数也不固定，而且时隙之间并不要求连续，这些特点可以有效减少空闲时隙，从而提高线路的利用率，但是需要额外附加5个字节的首部，增加了网络的开销，一定程度上降低了通信速度。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401140455309.png" srcset="/img/loading.gif" lazyload alt="同步与异步"></p>
+<p><strong>ATM与上层协议</strong></p>
+<p>在以太网中一个帧最大可传输1500字节，FDDI可以最大传输4352字节，而ATM的一个信元只能发送固定的48字节数据。这48字节的数据部分若包含IP首部和TCP首部，则基本无法存放上层的数据，为此一般不会单独使用ATM，而是使用上层的AAL（ATM Adapter Layer)。在上层为IP的情况下，则叫做AAL5。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401135759880.png" srcset="/img/loading.gif" lazyload alt></p>
+<p>信元丢失一个，则整个IP包就相当于被损坏。此时，AAL5的帧检查位报错，导致接收端不得不丢弃所有的信元。所以出现丢失就要全部重发，重发的概率很高。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401141501021.png" srcset="/img/loading.gif" lazyload alt></p>
+<h4 id="3-6-2-POS"><a href="#3-6-2-POS" class="headerlink" title="3.6.2 POS"></a>3.6.2 POS</h4><p>POS是一种在SDH上进行包通信的一种协议。SDH是在光纤上传输数字信号的物理层规范。</p>
+<h4 id="3-6-3-FDDI"><a href="#3-6-3-FDDI" class="headerlink" title="3.6.3 FDDI"></a>3.6.3 FDDI</h4><p>FDDI叫做分布式光线数据接口，FDDI采用令牌环的访问方式，令牌环访问方式在网络拥堵的情况下极容易导致网络收敛。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401142517793.png" srcset="/img/loading.gif" lazyload alt="FDDI"></p>
+<h4 id="3-6-4-Token-Ring"><a href="#3-6-4-Token-Ring" class="headerlink" title="3.6.4 Token Ring"></a>3.6.4 Token Ring</h4><p>令牌环网源自IBM开发的令牌环LAN技术，但是由于价格一直居高不下以及所支持的提供商较少未能得到普及。</p>
+<h4 id="3-6-5-100VG-AnyLAN"><a href="#3-6-5-100VG-AnyLAN" class="headerlink" title="3.6.5 100VG-AnyLAN"></a>3.6.5 100VG-AnyLAN</h4><p>它以语音级的3类UTP电缆实现100Mbps的传输速率，它的数据帧格式既能应对以太网又能应对令牌环网。在传输方式上，它采用扩展了令牌传递方式的需求优先访问方式。</p>
+<h4 id="3-6-6-光纤通道"><a href="#3-6-6-光纤通道" class="headerlink" title="3.6.6 光纤通道"></a>3.6.6 光纤通道</h4><p>实现数据通信的一种数据链路</p>
+<h4 id="3-6-7-HIPPI"><a href="#3-6-7-HIPPI" class="headerlink" title="3.6.7 HIPPI"></a>3.6.7 HIPPI</h4><p>HIPPI用于连接超大型计算机传输速率为800Mbps或1.6Gbps，铜缆的实际传输距离在25米以内，但是光纤作为传输介质时，，可以延长到数公里</p>
+<h4 id="3-6-8-IEEE1394"><a href="#3-6-8-IEEE1394" class="headerlink" title="3.6.8 IEEE1394"></a>3.6.8 IEEE1394</h4><p>也叫FireWire或i.Link，是面向家庭的局域网，主要用于连接AV等计算机外围设备。</p>
+<h4 id="3-6-9-HDMI"><a href="#3-6-9-HDMI" class="headerlink" title="3.6.9 HDMI"></a>3.6.9 HDMI</h4><p>高清晰度多媒体接口，他可以通过一根缆线实现图像和声音等数字信号的高品质传输，曾主要用于DVD/蓝光播放器……</p>
+<h4 id="3-6-19-iSCSI"><a href="#3-6-19-iSCSI" class="headerlink" title="3.6.19 iSCSI"></a>3.6.19 iSCSI</h4><p>它是将个人电脑连接硬盘的SCSI标准应用于TCP/IP网络上的一种标准。它把SCSI的命令和数据包含进IP包内，进行数据传输。由此，人们就可以像使用个人电脑内嵌的SCSI硬盘一样使用网络上直连的大规模硬盘了。</p>
+<h4 id="3-6-11-InfiniBand"><a href="#3-6-11-InfiniBand" class="headerlink" title="3.6.11 InfiniBand"></a>3.6.11 InfiniBand</h4><p>InfiniBand是针对高端服务器的一种超高速传输接口技术，它最大的特点是高速，高可靠性以及低延迟。它支持多并发连接，将多个线缆合并为一个线缆。</p>
+<h4 id="3-6-12-DOCSIS"><a href="#3-6-12-DOCSIS" class="headerlink" title="3.6.12 DOCSIS"></a>3.6.12 DOCSIS</h4><p>DOCSIS是有线电视传输数据的行业标准，定义了有线电视的同轴电缆与Cable Modem的连接及其与以太网进行转换的具体规范。</p>
+<h4 id="3-6-13-高速PLC"><a href="#3-6-13-高速PLC" class="headerlink" title="3.6.13 高速PLC"></a>3.6.13 高速PLC</h4><p>高速PLC是指在家里或办公室内利用电力线上数MHz~数十MHz频带范围，实现数十Mbps-200Mbps传输速率的一种通信方式。</p>
+<p><img src="/2023/03/29/%E5%9B%BE%E8%A7%A3TCPIP%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/image-20230401143741597.png" srcset="/img/loading.gif" lazyload alt></p>
 
                 
               </div>
